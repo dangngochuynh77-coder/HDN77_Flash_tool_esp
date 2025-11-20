@@ -4,6 +4,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>HDN77 — ESP32 Web Flasher</title>
+    <link rel="icon" type="image/png" href="icon.png">
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%238b5cf6%22></rect><path fill=%22%23fff%22 d=%22M30,30h40v40h-40z M40,20v10 M50,20v10 M60,20v10 M40,70v10 M50,70v10 M60,70v10 M20,40h10 M20,50h10 M20,60h10 M70,40h10 M70,50h10 M70,60h10%22 stroke=%22%23fff%22 stroke-width=%225%22 stroke-linecap=%22round%22></path></svg>">
 
     <!-- Google Fonts - Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,12 +26,19 @@
     <div class="container-fluid px-3 py-3 py-md-4" style="max-width: 1400px;">
         <div class="card shadow-lg border-0">
             <div class="card-body p-3 p-md-4">
+                <!-- Centered Header -->
+                <div class="text-center mb-3">
+                    <h1 class="mb-0 fw-bold d-inline-flex align-items-center" id="main-title">
+                        <a href="https://www.youtube.com/@HDN77" target="_blank" rel="noopener noreferrer" title="Ghé thăm kênh YouTube của HDN77">
+                            <img src="icon.png" alt="HDN77 Icon" style="height: 100px; width: auto; margin-right: 0.5rem;">
+                            <span class="gradient-text-h1">HDN77 — ESP32 Web Flasher</span>
+                        </a>
+                    </h1>
+                </div>
+
                 <!-- Header Section -->
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
                     <div>
-                        <h1 class="mb-2 fw-bold text-primary">
-                            <i class="bi bi-cpu me-2"></i>HDN77 — ESP32 Web Flasher
-                        </h1>
                         <p class="text-muted mb-0">
                             <i class="bi bi-info-circle me-1"></i>
                             Dùng Chrome/Edge. Kết nối USB → chọn firmware → flash.

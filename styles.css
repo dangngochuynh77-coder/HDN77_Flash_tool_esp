@@ -10,8 +10,8 @@
   --bg-gradient-mid: #8b5cf6;   /* Vibrant Violet */
   --bg-gradient-end: #ec4899;   /* Vibrant Pink */
 
-  --card-bg: #ffffff;
-  --card-shadow: rgba(236, 72, 153, 0.4);
+  --card-bg: #1f2937; /* Dark background */
+  --card-shadow: rgba(0, 0, 0, 0.4);
 
   /* Primary Colors - Vibrant Blue/Purple */
   --primary-color: #ec4899; /* Vibrant Pink */
@@ -33,7 +33,7 @@
   /* Neutral Colors */
   --dark-color: #1f2937;
   --dark-light: #374151;
-  --light-color: #f9fafb;
+  --light-color: #e5e7eb; /* Lighter gray for text */
   --muted-color: #6b7280;
   --border-color: #e5e7eb;
 
@@ -139,6 +139,7 @@ body {
 .card-body {
   background: var(--card-bg);
   border-radius: var(--border-radius-lg);
+  color: var(--light-color);
   padding: 1.25rem !important;
 }
 
@@ -167,7 +168,7 @@ body {
 
 /* ========== Typography ========== */
 h1 {
-  font-size: 1.75rem;
+  font-size: 2.25rem;
   font-weight: 700;
   letter-spacing: -0.5px;
   background: linear-gradient(135deg, var(--primary-gradient-start), var(--primary-gradient-end));
@@ -178,10 +179,20 @@ h1 {
   margin-bottom: 0.5rem;
 }
 
+/* Title icon hover effect */
+#main-title a img {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#main-title a:hover img {
+  transform: scale(1.1);
+  cursor: pointer;
+}
+
 h3, .h5 {
   font-weight: 600;
   letter-spacing: -0.3px;
-  color: var(--dark-color);
+  color: var(--light-color);
   font-size: 1rem;
   margin-bottom: 0.75rem;
 }
@@ -294,13 +305,15 @@ h3, .h5 {
   border-radius: var(--border-radius);
   border: 2px solid var(--border-color);
   transition: all var(--transition-speed) var(--transition-ease);
-  font-size: 1rem;
-  background: white;
+  font-size: 1rem;  
+  background: var(--dark-light);
+  color: var(--light-color);
+  border-color: var(--muted-color);
 }
 
 .form-select:focus,
 .form-control:focus {
-  border-color: var(--primary-color);
+  border-color: var(--primary-gradient-end);
   box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.15);
   outline: none;
 }
@@ -313,7 +326,7 @@ h3, .h5 {
 .form-label {
   font-size: 0.95rem;
   margin-bottom: 0.5rem;
-  color: var(--dark-color);
+  color: var(--light-color);
   font-weight: 600;
 }
 
@@ -327,14 +340,14 @@ h3, .h5 {
   font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
   font-size: 0.875rem;
   text-align: center;
-  background: var(--primary-light);
+  background: var(--dark-light);
   font-weight: 600;
   letter-spacing: 0.5px;
-  border: 2px solid var(--primary-color);
+  border: 2px solid var(--muted-color);
 }
 
 .flash-address-input:focus {
-  background: white;
+  background: var(--dark-color);
   border-color: var(--primary-color);
   box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.15);
 }
@@ -350,7 +363,7 @@ h3, .h5 {
   border-radius: var(--border-radius-lg);
   padding: 1.25rem 1rem;
   text-align: center;
-  transition: all var(--transition-speed) var(--transition-ease);
+  transition: all var(--transition-speed) var(--transition-ease);  
   background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
   cursor: pointer;
   min-height: 120px;
@@ -400,7 +413,7 @@ h3, .h5 {
 
 .file-drop.dragover {
   border-color: var(--success-color);
-  background: var(--success-light);
+  background: rgba(34, 197, 94, 0.1);
   border-style: solid;
   box-shadow: 0 0 30px rgba(16, 185, 129, 0.3);
 }
@@ -681,7 +694,7 @@ h3, .h5 {
   }
 
   h1 {
-    font-size: 1.5rem;
+    font-size: 1.85rem;
   }
 
   .btn-lg {
@@ -720,7 +733,7 @@ h3, .h5 {
   }
 
   h1 {
-    font-size: 1.35rem;
+    font-size: 1.6rem;
   }
 
   .card-body {
@@ -745,7 +758,7 @@ h3, .h5 {
 
 /* ========== Utility Classes ========== */
 .text-muted {
-  color: var(--muted-color) !important;
+  color: #9ca3af !important; /* Lighter muted color for dark bg */
 }
 
 .text-primary {
@@ -913,7 +926,7 @@ html {
 }
 
 .warning-content {
-  background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+  background: var(--card-bg);
   border-radius: 20px;
   padding: 2rem;
   max-width: 500px;
@@ -963,7 +976,7 @@ html {
 .warning-title {
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--dark-color);
+  color: var(--light-color);
   margin: 0;
   background: linear-gradient(135deg, var(--danger-color), #f59e0b);
   -webkit-background-clip: text;
@@ -972,7 +985,7 @@ html {
 }
 
 .warning-message {
-  color: var(--dark-light);
+  color: var(--light-color);
   line-height: 1.6;
   margin-bottom: 1.5rem;
 }
@@ -1005,7 +1018,7 @@ html {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.25rem 0;
+  padding: 0.25rem 0;  
   color: var(--dark-light);
   font-weight: 500;
 }
@@ -1036,7 +1049,7 @@ html {
 
 .current-browser p {
   margin: 0;
-  color: var(--dark-light);
+  color: var(--light-color);
   font-weight: 500;
 }
 
@@ -1125,7 +1138,7 @@ html {
 
 #firmwareDescription {
   line-height: 1.4;
-  color: var(--dark-light) !important;
+  color: #d1d5db !important;
 }
 
 .firmware-info .d-flex span {
