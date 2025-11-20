@@ -1,0 +1,49 @@
+{
+  "firmwareList": [
+     {
+      "id": "Puppy_otto_free",
+      "name": "Puppy_otto_free V2.0.4",
+      "filename": "Puppy_otto_free V2.0.4.bin",
+      "flashAddress": "0x00000",
+      "path": "https://cdn.jsdelivr.net/gh/TienHuyIoT/esp_web_flasher@master/samples/bread-compact-wifi_music_v2.0.4.bin",
+      "description": "Firmware Puppy by HDN; wake word: Puppy",
+      "size": "8,743KB",
+      "version": "2.0.4",
+      "category": "AI Xiaozhi",
+      "note": "Bản free sẽ không full các hành động.",
+      "hardware_version": "ESP32-S3",
+      "features": [
+        "Hạn chế hành động",
+        "Phát nhạc server xiaozhi (đã sập)",
+        "Tra giá vàng",
+        "Tin tức trên Express"
+      ],
+      "hardware_info": {
+        "chip": "ESP32-S3",
+        "flash_size": "16MB",
+        "compatible_boards": ["Otto-robot"],
+        "minimum_requirements": {
+          "flash": "8MB",
+          "ram": "512KB",
+          "psram": "2MB"
+        },
+        "gpio_requirements": [
+          "I2S for audio output",
+          "I2C for OLED display",
+          "GPIO for touch buttons",
+          "UART for debugging"
+        ],
+        "power_requirements": "5V via USB"
+      }
+    }
+  ],
+  "categories": [
+    "AI Xiaozhi"
+  ],
+  "metadata": {
+    "version": "1.0.0",
+    "lastUpdated": "2025-11-08",
+    "description": "ESP32 firmware collection for web flasher (public)",
+    "author": "HDN77"
+  }
+}

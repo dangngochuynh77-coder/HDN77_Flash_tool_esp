@@ -225,12 +225,36 @@ verifyPasswordBtn.addEventListener('click', async () => {
         passwordHelp.classList.add('d-none');
         firmwarePasswordInput.disabled = true;
         verifyPasswordBtn.disabled = true;
-        loadFirmwareDatabase(); // Tải danh sách firmware
+        await loadFirmwareDatabase(); // Tải danh sách firmware đầy đủ
         showFirmwareInfo(null);
     } else {
         passwordHelp.classList.remove('d-none');
     }
 });
+
+// Load public firmware database initially
+async function loadPublicFirmwareDatabase() {
+    try {
+        log('Đang tải danh sách firmware công khai...');
+        const response = await fetch('./firmware_public.json');
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        firmwareDatabase = await response.json();
+        log(`✅ Đã tải ${firmwareDatabase.firmwareList.length} firmware (công khai)`);
+
+        populateFirmwareList();
+
+    } catch (error) {
+        log(`❌ Lỗi tải firmware database (công khai): ${error.message}`);
+
+        // Fallback to empty list
+        firmwareDatabase = { firmwareList: [], categories: [] };
+        populateFirmwareList();
+    }
+}
 
 // Firmware Database Functions
 async function loadFirmwareDatabase() {
@@ -362,6 +386,9 @@ function showFirmwareInfo(firmware) {
     const firmwareAddress = document.getElementById('firmwareAddress');
     const firmwareVersion = document.getElementById('firmwareVersion');
     
+    const featuresSection = document.getElementById('firmwareFeaturesSection');
+    const featuresList = document.getElementById('firmwareFeaturesList');
+
     const firmwareDetails = document.getElementById('firmwareDetails');
     // Hardware info elements
     const hardwareInfo = document.getElementById('hardwareInfo');
@@ -388,6 +415,19 @@ function showFirmwareInfo(firmware) {
     firmwareAddress.textContent = firmware.flashAddress;
     firmwareVersion.textContent = `v${firmware.version}`;
     
+    // Populate features
+    if (firmware.features && firmware.features.length > 0) {
+        featuresList.innerHTML = ''; // Clear previous list
+        firmware.features.forEach(feature => {
+            const li = document.createElement('li');
+            li.innerHTML = `<i class="bi bi-check-circle-fill text-success me-2" style="font-size: 0.8em;"></i>${feature}`;
+            featuresList.appendChild(li);
+        });
+        featuresSection.classList.remove('d-none');
+    } else {
+        featuresSection.classList.add('d-none');
+    }
+
     firmwareDetails.classList.remove('d-none');
     // Hardware info
     if (firmware.hardware_info) {
@@ -960,6 +1000,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         log('⚠️ Cảnh báo: Đang chạy từ file://');
         log('💡 Khuyến nghị: Sử dụng Live Server hoặc HTTP server để tránh lỗi CORS');
     }
+    
+    // Load public firmware database
+    await loadPublicFirmwareDatabase();
     
     // Initial sync log height
     setTimeout(() => {
