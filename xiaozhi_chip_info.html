@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<!-- cSpell:disable -->
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>HDN77 — XIAOZHI Chip Info Reader</title>
+
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5.0 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+<style>
+/* ========================================
+   ESP32 Chip Info - Modern Styles
+   Bootstrap 5.0 + Google Fonts Integration
+   ======================================== */
+
+/* ========== CSS Variables ========== */
+:root {
+  /* Modern Blue/Purple Gradient Color Scheme */
+  --bg-gradient-start: #667eea;
+  --bg-gradient-mid: #764ba2;
+  --bg-gradient-end: #f093fb;
+
+  --card-bg: #ffffff;
+  --card-shadow: rgba(102, 126, 234, 0.4);
+
+  /* Primary Colors - Vibrant Blue/Purple */
+  --primary-color: #667eea;
+  --primary-hover: #5568d3;
+  --primary-light: #e0e7ff;
+  --primary-gradient-start: #667eea;
+  --primary-gradient-end: #764ba2;
+
+  /* Accent Colors */
+  --success-color: #10b981;
+  --success-light: #d1fae5;
+  --danger-color: #ef4444;
+  --danger-light: #fee2e2;
+  --warning-color: #f59e0b;
+  --warning-light: #fef3c7;
+  --info-color: #06b6d4;
+  --info-light: #cffafe;
+
+  /* Neutral Colors */
+  --dark-color: #1f2937;
+  --dark-light: #374151;
+  --light-color: #f9fafb;
+  --muted-color: #6b7280;
+  --border-color: #e5e7eb;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-xl: 0 25px 50px -12px rgba(102, 126, 234, 0.25);
+
+  /* Border Radius */
+  --border-radius: 0.75rem;
+  --border-radius-lg: 1rem;
+
+  /* Transitions */
+  --transition-speed: 0.3s;
+  --transition-ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ========== Global Styles ========== */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-mid) 50%, var(--bg-gradient-end) 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  color: var(--dark-color);
+  font-size: 16px;
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* ========== Container Styles ========== */
+.container {
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1.25rem 1rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+
+.container > .card {
+  flex: 0 0 auto;
+  width: 100%;
+  margin: 0;
+}
+
+/* ========== Card Styles ========== */
+.card {
+  border-radius: var(--border-radius-lg);
+  transition: transform var(--transition-speed) var(--transition-ease),
+              box-shadow var(--transition-speed) var(--transition-ease);
+  box-shadow: 0 10px 25px -5px rgba(102, 126, 234, 0.2),
+              0 5px 10px -5px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  animation: slideIn 0.6s var(--transition-ease);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 35px -5px rgba(102, 126, 234, 0.25),
+              0 8px 15px -5px rgba(0, 0, 0, 0.1);
+}
+
+.card-body {
+  background: var(--card-bg);
+  border-radius: var(--border-radius-lg);
+  padding: 1.5rem !important;
+}
+
+/* ========== Typography ========== */
+h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, var(--primary-gradient-start), var(--primary-gradient-end));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+}
+
+h3, .h5 {
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  color: var(--dark-color);
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+/* ========== Button Styles ========== */
+.btn {
+  font-weight: 600;
+  border-radius: var(--border-radius);
+  transition: all var(--transition-speed) var(--transition-ease);
+  box-shadow: var(--shadow-sm);
+  letter-spacing: 0.3px;
+  border: none;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-lg {
+  padding: 0.75rem 1.75rem;
+  font-size: 1rem;
+}
+
+.btn i {
+  font-size: 1.1em;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary-gradient-start), var(--primary-gradient-end));
+  border: none;
+  color: white;
+  box-shadow: 0 4px 15px 0 rgba(102, 126, 234, 0.4);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--primary-hover), #6b4fa0);
+  box-shadow: 0 6px 20px 0 rgba(102, 126, 234, 0.5);
+}
+
+.btn-outline-danger {
+  border: 2px solid var(--danger-color);
+  color: var(--danger-color);
+  background: transparent;
+}
+
+.btn-outline-danger:hover {
+  background: var(--danger-color);
+  color: white;
+  border-color: var(--danger-color);
+}
+
+.btn-outline-secondary {
+  border: 2px solid var(--muted-color);
+  color: var(--muted-color);
+  background: transparent;
+}
+
+.btn-outline-secondary:hover {
+  background: var(--muted-color);
+  color: white;
+  border-color: var(--muted-color);
+}
+
+/* ========== Chip Info Table ========== */
+.chip-info-table {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: var(--border-radius-lg);
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+  transition: background-color var(--transition-speed);
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-row:hover {
+  background-color: rgba(102, 126, 234, 0.05);
+  border-radius: 0.5rem;
+  margin: 0 -0.5rem;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+.info-label {
+  font-weight: 600;
+  color: var(--dark-color);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.info-label i {
+  color: var(--primary-color);
+  font-size: 1.1em;
+}
+
+.info-value {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-weight: 500;
+  color: var(--dark-light);
+  background: white;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.375rem;
+  border: 1px solid var(--border-color);
+  min-width: 120px;
+  text-align: center;
+}
+
+.info-value.loading {
+  background: var(--muted-color);
+  color: white;
+  animation: pulse 1.5s infinite;
+}
+
+.info-value.success {
+  background: var(--success-light);
+  color: var(--success-color);
+  border-color: var(--success-color);
+  font-weight: 600;
+}
+
+.info-value.error {
+  background: var(--danger-light);
+  color: var(--danger-color);
+  border-color: var(--danger-color);
+}
+
+/* ========== Status Indicator ========== */
+.status-indicator {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 8px;
+  animation: pulse 2s infinite;
+  position: relative;
+}
+
+.status-connected {
+  background: var(--success-color);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.8);
+}
+
+.status-disconnected {
+  background: var(--danger-color);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.8);
+}
+
+/* ========== Badge Styles ========== */
+.badge {
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.badge.bg-secondary {
+  background: linear-gradient(135deg, #6b7280, #4b5563) !important;
+}
+
+.badge.bg-success {
+  background: linear-gradient(135deg, var(--success-color), #059669) !important;
+}
+
+/* ========== Responsive Design ========== */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .card-body {
+    padding: 1.25rem !important;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  .btn-lg {
+    padding: 0.65rem 1.25rem;
+    font-size: 0.95rem;
+  }
+
+  .info-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .info-value {
+    width: 100%;
+    text-align: left;
+  }
+}
+
+/* ========== Animations ========== */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ========== Warning Modal ========== */
+.warning-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.warning-modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.warning-content {
+  background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+  border-radius: 20px;
+  padding: 2rem;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  position: relative;
+  overflow: hidden;
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.warning-modal.show .warning-content {
+  transform: scale(1);
+}
+
+.warning-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, var(--danger-color), #f59e0b, var(--danger-color));
+}
+
+.warning-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.warning-icon {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, var(--danger-color), #f59e0b);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: white;
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+}
+
+.warning-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--dark-color);
+  margin: 0;
+  background: linear-gradient(135deg, var(--danger-color), #f59e0b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.warning-message {
+  color: var(--dark-light);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.warning-browsers {
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  border: 1px solid #bbf7d0;
+  border-radius: 12px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.warning-browsers h4 {
+  color: var(--success-color);
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.browser-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.browser-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0;
+  color: var(--dark-light);
+  font-weight: 500;
+}
+
+.browser-list li::before {
+  content: '✓';
+  color: var(--success-color);
+  font-weight: bold;
+}
+
+.current-browser {
+  background: linear-gradient(135deg, #fef2f2, #fee2e2);
+  border: 1px solid #fca5a5;
+  border-radius: 12px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.current-browser h4 {
+  color: var(--danger-color);
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.current-browser p {
+  margin: 0;
+  color: var(--dark-light);
+  font-weight: 500;
+}
+
+.warning-footer {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 2rem;
+}
+
+.warning-btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.warning-btn-primary {
+  background: linear-gradient(135deg, var(--danger-color), #f59e0b);
+  color: white;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+
+.warning-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+}
+
+.warning-btn-secondary {
+  background: #f1f5f9;
+  color: var(--dark-light);
+  border: 1px solid var(--border-color);
+}
+
+.warning-btn-secondary:hover {
+  background: #e2e8f0;
+  transform: translateY(-1px);
+}
+
+/* ========== Utility Classes ========== */
+.text-muted {
+  color: var(--muted-color) !important;
+}
+
+.text-primary {
+  color: var(--primary-color) !important;
+}
+
+.fw-semibold {
+  font-weight: 600 !important;
+}
+
+.fw-bold {
+  font-weight: 700 !important;
+}
+
+hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent,
+    var(--border-color),
+    transparent
+  );
+  margin: 1.5rem 0;
+}
+
+::selection {
+  background: var(--primary-color);
+  color: white;
+}
+</style>
+</head>
+<body>
+    <div class="container py-4 py-md-5">
+        <div class="card shadow-lg border-0">
+            <div class="card-body">
+                <!-- Header Section -->
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+                    <div>
+                        <h1 class="mb-2 fw-bold text-primary">
+                            <i class="bi bi-cpu me-2"></i>HD77 — XIAOZHI Chip Info Reader
+                        </h1>
+                        <p class="text-muted mb-0">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Kết nối XIAOZHI để đọc thông tin chi tiết về chip và flash memory.
+                        </p>
+                    </div>
+                    <div class="d-flex gap-2 align-items-center">
+                        <button id="connectBtn" class="btn btn-primary btn-lg">
+                            <i class="bi bi-usb-plug me-2"></i>Kết nối ESP32
+                        </button>
+                        <button id="disconnectBtn" class="btn btn-outline-danger btn-lg" disabled>
+                            <i class="bi bi-x-circle me-2"></i>Ngắt kết nối
+                        </button>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+
+                <!-- Connection Status -->
+                <div class="mb-4">
+                    <div id="chipInfo" class="badge bg-secondary fs-6 py-2 px-3">
+                        <span class="status-indicator status-disconnected"></span>Chưa kết nối
+                    </div>
+                </div>
+
+                <!-- Chip Information Section -->
+                <div class="mb-4">
+                    <h3 class="h5 fw-semibold mb-3">
+                        <i class="bi bi-cpu me-2"></i>Thông tin Chip & Flash Memory
+                    </h3>
+                    
+                    <div class="chip-info-table">
+                        <div class="info-row">
+                            <div class="info-label">
+                                <i class="bi bi-cpu"></i>
+                                <span>Chip</span>
+                            </div>
+                            <div id="chipName" class="info-value">--</div>
+                        </div>
+                        
+                        <div class="info-row">
+                            <div class="info-label">
+                                <i class="bi bi-stars"></i>
+                                <span>Features</span>
+                            </div>
+                            <div id="chipFeatures" class="info-value">--</div>
+                        </div>
+                        
+                        <div class="info-row">
+                            <div class="info-label">
+                                <i class="bi bi-gem"></i>
+                                <span>Crystal</span>
+                            </div>
+                            <div id="chipCrystal" class="info-value">--</div>
+                        </div>
+                        
+                        <div class="info-row">
+                            <div class="info-label">
+                                <i class="bi bi-ethernet"></i>
+                                <span>MAC</span>
+                            </div>
+                            <div id="chipMAC" class="info-value">--</div>
+                        </div>
+                        
+                        <div class="info-row">
+                            <div class="info-label">
+                                <i class="bi bi-fingerprint"></i>
+                                <span>Flash ID</span>
+                            </div>
+                            <div id="flashId" class="info-value">--</div>
+                        </div>
+                        
+                        <div class="info-row">
+                            <div class="info-label">
+                                <i class="bi bi-building"></i>
+                                <span>Flash Manufacturer ID</span>
+                            </div>
+                            <div id="flashManufacturerId" class="info-value">--</div>
+                        </div>
+                        
+                        <div class="info-row">
+                            <div class="info-label">
+                                <i class="bi bi-memory"></i>
+                                <span>Flash Memory Type</span>
+                            </div>
+                            <div id="flashMemoryType" class="info-value">--</div>
+                        </div>
+                        
+                        <div class="info-row">
+                            <div class="info-label">
+                                <i class="bi bi-speedometer"></i>
+                                <span>Flash Capacity Code</span>
+                            </div>
+                            <div id="flashCapacityCode" class="info-value">--</div>
+                        </div>
+                        
+                        <div class="info-row">
+                            <div class="info-label">
+                                <i class="bi bi-building-check"></i>
+                                <span>Flash Manufacturer</span>
+                            </div>
+                            <div id="flashManufacturer" class="info-value">--</div>
+                        </div>
+                        
+                        <div class="info-row">
+                            <div class="info-label">
+                                <i class="bi bi-hdd"></i>
+                                <span>Flash Size</span>
+                            </div>
+                            <div id="flashSize" class="info-value">--</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-flex gap-2 flex-wrap">
+                    <button id="refreshBtn" class="btn btn-outline-secondary" disabled>
+                        <i class="bi bi-arrow-clockwise me-2"></i>Làm mới thông tin
+                    </button>
+                    <button id="clearBtn" class="btn btn-outline-secondary">
+                        <i class="bi bi-eraser me-2"></i>Xóa thông tin
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-4" style="color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.3); font-size: 0.95rem;">
+            <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 12px; padding: 0.75rem 1.5rem; display: inline-block; border: 1px solid rgba(255,255,255,0.2);">
+                <i class="bi bi-github me-1"></i>
+                Created by <a href="https://www.facebook.com/DaNgocHuynh77/" target="_blank" class="text-decoration-none" style="color: #f093fb; font-weight: 600; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">HDN77</a>
+                • Thanks to <a href="https://github.com/TienHuyIoT" target="_blank" class="text-decoration-none" style="color: #87ceeb; font-weight: 600; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">TienHuyIoT</a>
+                • Powered by <a href="https://github.com/espressif/esptool-js" target="_blank" class="text-decoration-none" style="color: #87ceeb; font-weight: 600; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">esptool-js</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5.0 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js"></script>
+
+<script type="module">
+// Fix the import URL - remove the incorrect path
+import { ESPLoader, Transport } from "https://unpkg.com/esptool-js@0.5.4/bundle.js";
+
+// DOM Elements
+const connectBtn = document.getElementById('connectBtn');
+const disconnectBtn = document.getElementById('disconnectBtn');
+const chipInfoEl = document.getElementById('chipInfo');
+const refreshBtn = document.getElementById('refreshBtn');
+const clearBtn = document.getElementById('clearBtn');
+
+// Chip info elements
+const chipNameEl = document.getElementById('chipName');
+const chipFeaturesEl = document.getElementById('chipFeatures');
+const chipCrystalEl = document.getElementById('chipCrystal');
+const chipMACEl = document.getElementById('chipMAC');
+const flashIdEl = document.getElementById('flashId');
+const flashManufacturerIdEl = document.getElementById('flashManufacturerId');
+const flashMemoryTypeEl = document.getElementById('flashMemoryType');
+const flashCapacityCodeEl = document.getElementById('flashCapacityCode');
+const flashManufacturerEl = document.getElementById('flashManufacturer');
+const flashSizeEl = document.getElementById('flashSize');
+
+// Global Variables
+let device = null;
+let transport = null;
+let espLoader = null;
+let chip = null;
+let consoleBaudRate = 115200;
+
+// Serial library compatibility
+const serialLib = !navigator.serial && navigator.usb ? serial : navigator.serial;
+
+// ESP Loader Terminal Interface
+const espLoaderTerminal = {
+    clean() {
+        console.log('Terminal cleaned');
+    },
+    writeLine(data) {
+        console.log(data);
+    },
+    write(data) {
+        console.log(data);
+    },
+};
+
+// Utility Functions
+function updateConnectionStatus(connected, chipName = '') {
+    const indicator = chipInfoEl.querySelector('.status-indicator');
+    if (connected) {
+        indicator.className = 'status-indicator status-connected';
+        chipInfoEl.innerHTML = `<span class="status-indicator status-connected"></span>Kết nối: ${chipName}`;
+    } else {
+        indicator.className = 'status-indicator status-disconnected';
+        chipInfoEl.innerHTML = `<span class="status-indicator status-disconnected"></span>Chưa kết nối`;
+    }
+}
+
+function enableControls(connected) {
+    disconnectBtn.disabled = !connected;
+    connectBtn.disabled = connected;
+    refreshBtn.disabled = !connected;
+}
+
+function setLoadingState() {
+    const infoElements = [chipNameEl, chipFeaturesEl, chipCrystalEl, chipMACEl,
+                         flashIdEl, flashManufacturerIdEl, 
+                         flashMemoryTypeEl, flashCapacityCodeEl, 
+                         flashManufacturerEl, flashSizeEl];
+    
+    infoElements.forEach(el => {
+        el.textContent = 'Đang đọc...';
+        el.className = 'info-value loading';
+    });
+}
+
+function clearAllInfo() {
+    const infoElements = [chipNameEl, chipFeaturesEl, chipCrystalEl, chipMACEl,
+                         flashIdEl, flashManufacturerIdEl, 
+                         flashMemoryTypeEl, flashCapacityCodeEl, 
+                         flashManufacturerEl, flashSizeEl];
+    
+    infoElements.forEach(el => {
+        el.textContent = '--';
+        el.className = 'info-value';
+    });
+}
+
+function setInfoValue(element, value, isSuccess = true) {
+    element.textContent = value;
+    element.className = isSuccess ? 'info-value success' : 'info-value error';
+}
+
+function getManufacturerName(manufacturerId) {
+    const manufacturerNames = {
+        0x20: 'Micron/Numonyx/ST',
+        0x68: 'Boya',
+        0x85: 'Puya',
+        0x8C: 'ESMT',
+        0x9D: 'ISSI',
+        0x1C: 'EON',
+        0xC2: 'MXIC',
+        0xC8: 'GigaDevice', 
+        0xEF: 'Winbond'
+    };
+    
+    return manufacturerNames[manufacturerId] || 
+           `Unknown - ID 0x${manufacturerId.toString(16).padStart(2, '0').toUpperCase()} (check JEDEC JEP106)`;
+}
+
+function getFlashSizeFromCapacity(capacityByte) {
+    const flashSizes = {
+        0x10: '64KB',    // 2^16 bytes
+        0x11: '128KB',   // 2^17 bytes  
+        0x12: '256KB',   // 2^18 bytes
+        0x13: '512KB',   // 2^19 bytes
+        0x14: '1MB',     // 2^20 bytes
+        0x15: '2MB',     // 2^21 bytes
+        0x16: '4MB',     // 2^22 bytes
+        0x17: '8MB',     // 2^23 bytes
+        0x18: '16MB',    // 2^24 bytes
+        0x19: '32MB',    // 2^25 bytes
+        0x1A: '64MB',    // 2^26 bytes
+    };
+    
+    return flashSizes[capacityByte] || 
+           `Unknown (capacity code: 0x${capacityByte.toString(16).padStart(2, '0').toUpperCase()})`;
+}
+
+async function readChipInfo() {
+    if (!espLoader) return;
+    
+    try {
+        setLoadingState();
+        
+        // Get chip name and description (includes revision info)
+        const chipName = espLoader.chip.CHIP_NAME || 'ESP32';
+        let chipDescription = chipName;
+        
+        // Try to get detailed chip description (usually includes revision)
+        try {
+            if (espLoader.chip.getChipDescription) {
+                chipDescription = await espLoader.chip.getChipDescription(espLoader);
+            }
+        } catch (e) {
+            console.log('Could not get chip description:', e);
+        }
+        
+        setInfoValue(chipNameEl, chipDescription);
+        
+        // Get chip features using ROM API
+        try {
+            let features = [];
+            if (espLoader.chip.getChipFeatures) {
+                features = await espLoader.chip.getChipFeatures(espLoader);
+            } 
+            setInfoValue(chipFeaturesEl, features.length > 0 ? features.join(', ') : 'N/A');
+        } catch (e) {
+            console.log('Could not get chip features:', e);
+            setInfoValue(chipFeaturesEl, 'N/A');
+        }
+        
+        // Get crystal frequency using ROM API
+        try {
+            let crystalFreq = '40MHz'; // default
+            if (espLoader.chip.getCrystalFreq) {
+                const freq = await espLoader.chip.getCrystalFreq(espLoader);
+                crystalFreq = `${freq}MHz`;
+            }
+            setInfoValue(chipCrystalEl, crystalFreq);
+        } catch (e) {
+            console.log('Could not get crystal frequency:', e);
+            setInfoValue(chipCrystalEl, '40MHz'); // fallback
+        }
+        
+        // Read MAC address
+        try {
+            const macStr = await espLoader.chip.readMac(espLoader);
+            setInfoValue(chipMACEl, macStr);
+        } catch (e) {
+            console.log('Could not read MAC address:', e);
+            setInfoValue(chipMACEl, 'N/A');
+        }
+        
+        // Read flash ID
+        const flashId = await espLoader.readFlashId();
+        setInfoValue(flashIdEl, `0x${flashId.toString(16).padStart(6, '0').toUpperCase()}`);
+        
+        // Extract flash information
+        const manufacturer = flashId & 0xFF;
+        const memoryType = (flashId >> 8) & 0xFF;
+        const capacityByte = (flashId >> 16) & 0xFF;
+        
+        setInfoValue(flashManufacturerIdEl, `0x${manufacturer.toString(16).padStart(2, '0').toUpperCase()}`);
+        setInfoValue(flashMemoryTypeEl, `0x${memoryType.toString(16).padStart(2, '0').toUpperCase()}`);
+        setInfoValue(flashCapacityCodeEl, `0x${capacityByte.toString(16).padStart(2, '0').toUpperCase()}`);
+        
+        // Get manufacturer name
+        const manufacturerName = getManufacturerName(manufacturer);
+        setInfoValue(flashManufacturerEl, manufacturerName);
+        
+        // Calculate flash size
+        const flashSize = getFlashSizeFromCapacity(capacityByte);
+        setInfoValue(flashSizeEl, flashSize);
+        
+        console.log('Chip info read successfully');
+        
+    } catch (error) {
+        console.error('Error reading chip info:', error);
+        
+        // Set error state for failed reads
+        const errorElements = [flashIdEl, flashManufacturerIdEl, flashMemoryTypeEl, 
+                              flashCapacityCodeEl, flashManufacturerEl, flashSizeEl];
+        
+        errorElements.forEach(el => {
+            setInfoValue(el, 'Lỗi đọc', false);
+        });
+    }
+}
+
+// Event Listeners
+connectBtn.addEventListener('click', async () => {
+    try {
+        console.log('Đang yêu cầu kết nối thiết bị...');
+        
+        if (device === null) {
+            device = await serialLib.requestPort({});
+            transport = new Transport(device, true);
+        }
+
+        const loaderOptions = {
+            transport: transport,
+            baudrate: consoleBaudRate,
+            terminal: espLoaderTerminal,
+            debugLogging: false,
+        };
+
+        espLoader = new ESPLoader(loaderOptions);
+        chip = await espLoader.main();
+        
+        const chipName = espLoader.chip.CHIP_NAME || 'ESP32';
+        console.log(`Kết nối thành công với ${chipName}`);
+        
+        // Display port information
+        updateConnectionStatus(true, chipName);
+        enableControls(true);
+        
+        // Automatically read chip info after connection
+        await readChipInfo();
+        
+    } catch (err) {
+        console.error('Lỗi kết nối:', err.message);
+        alert('Lỗi kết nối: ' + err.message);
+        updateConnectionStatus(false);
+        enableControls(false);
+        clearAllInfo();
+    }
+});
+
+disconnectBtn.addEventListener('click', async () => {
+    if (transport) await transport.disconnect();
+
+    espLoader = null;
+    device = null;
+    transport = null;
+    chip = null;
+    
+    console.log('Đã ngắt kết nối');
+    updateConnectionStatus(false);
+    enableControls(false);
+    clearAllInfo();
+});
+
+refreshBtn.addEventListener('click', async () => {
+    if (espLoader) {
+        console.log('Làm mới thông tin chip...');
+        await readChipInfo();
+    }
+});
+
+clearBtn.addEventListener('click', () => {
+    clearAllInfo();
+    console.log('Đã xóa thông tin hiển thị');
+});
+
+// Create warning modal
+function createWarningModal() {
+    const modal = document.createElement('div');
+    modal.className = 'warning-modal';
+    modal.id = 'browserWarningModal';
+    
+    const currentBrowser = navigator.userAgent.includes('Firefox') ? 'Firefox' : 
+                          navigator.userAgent.includes('Safari') && !navigator.userAgent.includes('Chrome') ? 'Safari' : 
+                          navigator.userAgent.includes('Opera') ? 'Opera' :
+                          'Trình duyệt không hỗ trợ';
+    
+    modal.innerHTML = `
+        <div class="warning-content">
+            <div class="warning-header">
+                <div class="warning-icon">
+                    <i class="bi bi-exclamation-triangle"></i>
+                </div>
+                <h2 class="warning-title">Cảnh báo trình duyệt</h2>
+            </div>
+            
+            <div class="warning-message">
+                <p>Trang web XIAOZHI Chip Info Reader cần sử dụng <strong>Web Serial API</strong> để kết nối với thiết bị ESP32. API này chỉ được hỗ trợ trên một số trình duyệt nhất định.</p>
+            </div>
+            
+            <div class="warning-browsers">
+                <h4><i class="bi bi-check-circle-fill"></i> Trình duyệt được hỗ trợ:</h4>
+                <ul class="browser-list">
+                    <li><strong>Google Chrome</strong> (khuyến nghị)</li>
+                    <li><strong>Microsoft Edge</strong></li>
+                </ul>
+            </div>
+            
+            <div class="current-browser">
+                <h4><i class="bi bi-x-circle-fill"></i> Trình duyệt hiện tại:</h4>
+                <p><strong>${currentBrowser}</strong> - Không hỗ trợ Web Serial API</p>
+            </div>
+            
+            <div class="warning-message">
+                <p><i class="bi bi-info-circle"></i> Vui lòng mở trang này bằng <strong>Chrome</strong> hoặc <strong>Edge</strong> để sử dụng đầy đủ tính năng kết nối ESP32.</p>
+            </div>
+            
+            <div class="warning-footer">
+                <button class="warning-btn warning-btn-primary" onclick="closeWarningModal()">
+                    <i class="bi bi-x-lg"></i> Đóng
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    return modal;
+}
+
+// Show warning modal
+function showWarningModal() {
+    const modal = document.getElementById('browserWarningModal') || createWarningModal();
+    setTimeout(() => {
+        modal.classList.add('show');
+    }, 10);
+}
+
+// Close warning modal
+function closeWarningModal() {
+    const modal = document.getElementById('browserWarningModal');
+    if (modal) {
+        modal.classList.remove('show');
+        setTimeout(() => {
+            modal.remove();
+        }, 300);
+    }
+}
+
+// Make functions global for onclick handlers
+window.closeWarningModal = closeWarningModal;
+
+// Browser compatibility check
+function checkBrowserCompatibility() {
+    const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+    const isEdge = /Edg/.test(navigator.userAgent);
+    
+    if (!isChrome && !isEdge) {
+        // Show beautiful warning modal
+        showWarningModal();
+        
+        // Also disable connect button
+        connectBtn.disabled = true;
+        connectBtn.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i>Trình duyệt không hỗ trợ';
+        connectBtn.title = 'Vui lòng sử dụng Chrome hoặc Edge';
+        
+        return false;
+    }
+    
+    return true;
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('XIAOZHI Chip Info Reader đã sẵn sàng');
+    
+    // Check browser compatibility first
+    const isCompatible = checkBrowserCompatibility();
+    
+    if (isCompatible) {
+        console.log('✅ Trình duyệt tương thích');
+    } else {
+        console.log('❌ Trình duyệt không tương thích');
+    }
+    
+    // Check if running from file:// protocol (silent logging only)
+    if (window.location.protocol === 'file:') {
+        console.log('⚠️ Cảnh báo: Đang chạy từ file://');
+        console.log('💡 Khuyến nghị: Sử dụng Live Server hoặc HTTP server để tránh lỗi CORS');
+    }
+});
+</script>
+</body>
+</html>

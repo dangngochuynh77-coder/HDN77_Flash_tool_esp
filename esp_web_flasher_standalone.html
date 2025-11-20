@@ -1,0 +1,2356 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>HDN77 — ESP32 Web Flasher</title>
+
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5.0 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+<style>
+/* ========================================
+   ESP32 Web Flasher - Modern Styles
+   Bootstrap 5.0 + Google Fonts Integration
+   ======================================== */
+
+/* ========== CSS Variables ========== */
+:root {
+  /* Modern Blue/Purple Gradient Color Scheme */
+  --bg-gradient-start: #3b82f6;   /* Bright Blue */
+  --bg-gradient-mid: #8b5cf6;   /* Vibrant Violet */
+  --bg-gradient-end: #ec4899;   /* Vibrant Pink */
+
+  --card-bg: #ffffff;
+  --card-shadow: rgba(236, 72, 153, 0.4);
+
+  /* Primary Colors - Vibrant Blue/Purple */
+  --primary-color: #ec4899; /* Vibrant Pink */
+  --primary-hover: #db2777;
+  --primary-light: #fce7f3;
+  --primary-gradient-start: #ec4899;
+  --primary-gradient-end: #d946ef; /* Fuchsia */
+
+  /* Accent Colors */
+  --success-color: #22c55e;
+  --success-light: #d1fae5;
+  --danger-color: #ef4444;
+  --danger-light: #fee2e2;
+  --warning-color: #f59e0b;
+  --warning-light: #fef3c7;
+  --info-color: #06b6d4;
+  --info-light: #cffafe;
+
+  /* Neutral Colors */
+  --dark-color: #1f2937;
+  --dark-light: #374151;
+  --light-color: #f9fafb;
+  --muted-color: #6b7280;
+  --border-color: #e5e7eb;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-xl: 0 25px 50px -12px rgba(102, 126, 234, 0.25);
+
+  /* Border Radius */
+  --border-radius: 0.75rem;
+  --border-radius-lg: 1rem;
+
+  /* Transitions */
+  --transition-speed: 0.3s;
+  --transition-ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ========== Global Styles ========== */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-mid) 50%, var(--bg-gradient-end) 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  color: var(--dark-color);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* ========== Container Styles ========== */
+.container-fluid {
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Make card optimized for wide screens */
+.container-fluid > .card {
+  flex: 0 0 auto;
+  width: 100%;
+  margin: 0;
+}
+
+/* Compact layout improvements */
+@media (min-width: 1200px) {
+  .container-fluid {
+    padding: 1.5rem;
+  }
+  
+  /* Reduce vertical spacing on large screens */
+  .card-body {
+    padding: 1.5rem !important;
+  }
+  
+  /* Optimize firmware info display */
+  .firmware-info {
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  
+  /* Allow log terminal height to be controlled by JS on wide screens */
+  .log-terminal {
+    min-height: 200px;
+    max-height: none;
+  }
+}
+
+/* ========== Card Styles ========== */
+.card {
+  border-radius: var(--border-radius-lg);
+  transition: transform var(--transition-speed) var(--transition-ease),
+              box-shadow var(--transition-speed) var(--transition-ease);
+  box-shadow: 0 10px 25px -5px rgba(102, 126, 234, 0.2),
+              0 5px 10px -5px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 35px -5px rgba(102, 126, 234, 0.25),
+              0 8px 15px -5px rgba(0, 0, 0, 0.1);
+}
+
+.card-body {
+  background: var(--card-bg);
+  border-radius: var(--border-radius-lg);
+  padding: 1.25rem !important;
+}
+
+.card-body .mb-4 {
+  margin-bottom: 0.875rem !important;
+}
+
+.card-body .mb-3 {
+  margin-bottom: 0.625rem !important;
+}
+
+.card-body h1 {
+  margin-bottom: 0.5rem !important;
+}
+
+/* ========== Typography ========== */
+h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, var(--primary-gradient-start), var(--primary-gradient-end));
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+}
+
+h3, .h5 {
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  color: var(--dark-color);
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+/* ========== Button Styles ========== */
+.btn {
+  font-weight: 600;
+  border-radius: var(--border-radius);
+  transition: all var(--transition-speed) var(--transition-ease);
+  box-shadow: var(--shadow-sm);
+  letter-spacing: 0.3px;
+  border: none;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-lg {
+  padding: 0.625rem 1.5rem;
+  font-size: 0.95rem;
+}
+
+.btn i {
+  font-size: 1.05em;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary-gradient-start), var(--primary-gradient-end)) !important;
+  border: none;
+  color: white;
+  box-shadow: 0 4px 15px 0 var(--card-shadow);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--primary-hover), var(--primary-gradient-end)) !important;
+  box-shadow: 0 6px 20px 0 rgba(236, 72, 153, 0.5);
+}
+
+.btn-success {
+  background: linear-gradient(135deg, var(--success-color), #059669);
+  border: none;
+  box-shadow: 0 4px 15px 0 rgba(16, 185, 129, 0.4);
+}
+
+.btn-success:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+  box-shadow: 0 6px 20px 0 rgba(16, 185, 129, 0.5);
+}
+
+.btn-outline-danger {
+  border: 2px solid var(--danger-color);
+  color: var(--danger-color);
+  background: transparent;
+}
+
+.btn-outline-danger:hover {
+  background: var(--danger-color);
+  color: white;
+  border-color: var(--danger-color);
+}
+
+.btn-outline-warning {
+  border: 2px solid var(--warning-color);
+  color: var(--warning-color);
+  background: transparent;
+}
+
+.btn-outline-warning:hover {
+  background: var(--warning-color);
+  color: white;
+  border-color: var(--warning-color);
+}
+
+.btn-outline-secondary {
+  border: 2px solid var(--muted-color);
+  color: var(--muted-color);
+  background: transparent;
+}
+
+.btn-outline-secondary:hover {
+  background: var(--muted-color);
+  color: white;
+  border-color: var(--muted-color);
+}
+
+.btn-outline-info {
+  border: 2px solid var(--info-color);
+  color: var(--info-color);
+  background: transparent;
+}
+
+.btn-outline-info:hover {
+  background: var(--info-color);
+  color: white;
+  border-color: var(--info-color);
+}
+
+/* ========== Form Controls ========== */
+.form-select,
+.form-control {
+  border-radius: var(--border-radius);
+  border: 2px solid var(--border-color);
+  transition: all var(--transition-speed) var(--transition-ease);
+  font-size: 1rem;
+  background: white;
+}
+
+.form-select:focus,
+.form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.15);
+  outline: none;
+}
+
+.form-select-lg {
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+}
+
+.form-label {
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  color: var(--dark-color);
+  font-weight: 600;
+}
+
+.form-label i {
+  color: var(--primary-color);
+}
+
+.flash-address-input {
+  width: 110px;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 0.875rem;
+  text-align: center;
+  background: var(--primary-light);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  border: 2px solid var(--primary-color);
+}
+
+.flash-address-input:focus {
+  background: white;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.15);
+}
+
+.flash-address-input:invalid {
+  border-color: var(--danger-color);
+  background: var(--danger-light);
+}
+
+/* ========== File Drop Zone ========== */
+.file-drop {
+  border: 3px dashed rgba(102, 126, 234, 0.4);
+  border-radius: var(--border-radius-lg);
+  padding: 1.25rem 1rem;
+  text-align: center;
+  transition: all var(--transition-speed) var(--transition-ease);
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+  cursor: pointer;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.file-drop::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, var(--primary-gradient-start), var(--primary-gradient-end));
+  opacity: 0;
+  transition: opacity var(--transition-speed) var(--transition-ease);
+  z-index: 0;
+}
+
+.file-drop input[type="file"] {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  opacity: 0 !important;
+  cursor: pointer !important;
+  z-index: 2 !important;
+  display: block !important;
+}
+
+.file-drop:hover {
+  border-color: var(--primary-color);
+  border-style: solid;
+  transform: scale(1.02);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
+}
+
+.file-drop:hover::before {
+  opacity: 0.1;
+}
+
+.file-drop.dragover {
+  border-color: var(--success-color);
+  background: var(--success-light);
+  border-style: solid;
+  box-shadow: 0 0 30px rgba(16, 185, 129, 0.3);
+}
+
+.file-drop > div {
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.file-drop > div * {
+  pointer-events: none;
+}
+
+.file-drop a#browseBtn {
+  pointer-events: auto;
+  position: relative;
+  z-index: 3;
+}
+
+.file-drop i.bi-file-earmark-arrow-up {
+  color: var(--primary-color);
+  transition: transform var(--transition-speed) var(--transition-ease);
+  filter: drop-shadow(0 2px 4px rgba(102, 126, 234, 0.2));
+}
+
+.file-drop:hover i.bi-file-earmark-arrow-up {
+  transform: translateY(-8px) scale(1.1);
+  color: var(--primary-gradient-end);
+}
+
+/* ========== Progress Bar ========== */
+.progress-custom {
+  width: 100%;
+  height: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #e5e7eb, #f3f4f6);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-color);
+}
+
+.progress-custom > i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg,
+    var(--primary-gradient-start) 0%,
+    var(--primary-gradient-end) 50%,
+    var(--info-color) 100%
+  );
+  width: 0%;
+  transition: width 0.3s var(--transition-ease);
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-custom > i::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.3) 0%,
+    transparent 50%,
+    rgba(0, 0, 0, 0.1) 100%
+  );
+}
+
+.progress-custom > i::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ========== Log Terminal ========== */
+.log-terminal {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  color: #e0e7ff;
+  padding: 1rem;
+  border-radius: var(--border-radius-lg);
+  max-height: 400px;
+  overflow: auto;
+  font-size: 0.8125rem;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  line-height: 1.5;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4),
+              0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  position: relative;
+}
+
+.log-terminal::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(102, 126, 234, 0.5),
+    transparent
+  );
+}
+
+.log-terminal::-webkit-scrollbar {
+  width: 10px;
+}
+
+.log-terminal::-webkit-scrollbar-track {
+  background: #0f172a;
+  border-radius: 5px;
+}
+
+.log-terminal::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, var(--primary-gradient-start), var(--primary-gradient-end));
+  border-radius: 5px;
+  border: 2px solid #0f172a;
+}
+
+.log-terminal::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, var(--primary-hover), #6b4fa0);
+}
+
+/* ========== Status Indicator ========== */
+.status-indicator {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 8px;
+  animation: pulse 2s infinite;
+  position: relative;
+}
+
+.status-connected {
+  background: var(--success-color);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.8),
+              0 0 20px rgba(16, 185, 129, 0.4);
+}
+
+.status-connected::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: 50%;
+  border: 2px solid var(--success-color);
+  opacity: 0;
+  animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.status-disconnected {
+  background: var(--danger-color);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.8),
+              0 0 20px rgba(239, 68, 68, 0.4);
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+/* ========== Badge Styles ========== */
+.badge {
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.badge.bg-secondary {
+  background: linear-gradient(135deg, #6b7280, #4b5563) !important;
+}
+
+/* ========== Responsive Design ========== */
+
+/* Desktop Optimizations */
+@media (min-width: 1400px) {
+  .container-fluid {
+    max-width: 1500px;
+  }
+  
+  /* More compact spacing on very wide screens */
+  .card-body {
+    padding: 2rem !important;
+  }
+  
+  .log-terminal {
+    min-height: 300px;
+  }
+}
+
+/* Large Desktop */
+@media (min-width: 1200px) and (max-width: 1399px) {
+  .log-terminal {
+    min-height: 300px;
+  }
+  
+  .firmware-info {
+    max-height: 380px;
+  }
+}
+
+/* Medium screens - still keep 2 column layout */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .container-fluid {
+    max-width: 1200px;
+  }
+  
+  .log-terminal {
+    min-height: 200px;
+  }
+}
+
+/* Tablet */
+@media (max-width: 991px) {
+  .container-fluid {
+    padding: 1rem;
+  }
+
+  .card-body {
+    padding: 1.25rem !important;
+  }
+
+  .log-terminal {
+    height: 220px !important;
+  }
+  
+  /* Single column layout for tablets */
+  .col-xl-5, .col-xl-7 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  body {
+    padding: 0;
+  }
+
+  .container-fluid {
+    padding: 0.75rem;
+  }
+
+  .card-body {
+    padding: 1rem !important;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  .btn-lg {
+    padding: 0.65rem 1.25rem;
+    font-size: 0.95rem;
+  }
+
+  .file-drop {
+    padding: 1rem;
+    min-height: 100px;
+  }
+
+  .log-terminal {
+    height: 200px !important;
+    font-size: 0.8rem;
+    padding: 0.75rem;
+  }
+
+  .flash-address-input {
+    width: 95px;
+  }
+  
+  .firmware-info {
+    max-height: 300px;
+  }
+}
+
+@media (max-width: 576px) {
+  body {
+    font-size: 14px;
+    padding: 0;
+  }
+
+  .container {
+    padding: 0.75rem;
+  }
+
+  h1 {
+    font-size: 1.35rem;
+  }
+
+  .card-body {
+    padding: 0.875rem !important;
+  }
+
+  .btn-lg {
+    padding: 0.55rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .file-drop {
+    min-height: 110px;
+    padding: 1rem;
+  }
+
+  .flash-address-input {
+    width: 85px;
+    font-size: 0.8rem;
+  }
+}
+
+/* ========== Utility Classes ========== */
+.text-muted {
+  color: var(--muted-color) !important;
+}
+
+.text-primary {
+  color: var(--primary-color) !important;
+}
+
+.fw-semibold {
+  font-weight: 600 !important;
+}
+
+.fw-bold {
+  font-weight: 700 !important;
+}
+
+/* ========== Animations ========== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.card {
+  animation: slideIn 0.6s var(--transition-ease);
+}
+
+/* ========== Link Styles ========== */
+a {
+  color: var(--primary-color);
+  transition: color var(--transition-speed) var(--transition-ease);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--primary-gradient-end);
+  text-decoration: none;
+}
+
+hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent,
+    var(--border-color),
+    transparent
+  );
+  margin: 1.5rem 0;
+}
+
+.bi {
+  vertical-align: middle;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: var(--primary-color);
+  color: white;
+}
+
+::-moz-selection {
+  background: var(--primary-color);
+  color: white;
+}
+
+/* ========== Warning Modal ========== */
+.warning-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.warning-modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.warning-content {
+  background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+  border-radius: 20px;
+  padding: 2rem;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  position: relative;
+  overflow: hidden;
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.warning-modal.show .warning-content {
+  transform: scale(1);
+}
+
+.warning-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, var(--danger-color), #f59e0b, var(--danger-color));
+}
+
+.warning-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.warning-icon {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, var(--danger-color), #f59e0b);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: white;
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+}
+
+.warning-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--dark-color);
+  margin: 0;
+  background: linear-gradient(135deg, var(--danger-color), #f59e0b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.warning-message {
+  color: var(--dark-light);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.warning-browsers {
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  border: 1px solid #bbf7d0;
+  border-radius: 12px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.warning-browsers h4 {
+  color: var(--success-color);
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Flash Status Notification */
+#flashStatusNotification {
+  background: linear-gradient(135deg, #e0f2fe, #b3e5fc);
+  border: 1px solid #81d4fa;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+#flashStatusNotification .spinner-border {
+  color: var(--primary-color);
+}
+
+#flashStatusNotification strong {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+/* Firmware Info Display */
+.firmware-info {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  border-radius: var(--border-radius);
+  padding: 0.75rem;
+  transition: all var(--transition-speed) var(--transition-ease);
+}
+
+.firmware-details {
+  position: relative;
+}
+
+.firmware-info:hover {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.08), rgba(118, 75, 162, 0.08));
+  border-color: rgba(102, 126, 234, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.15);
+}
+
+#firmwareName {
+  font-size: 0.95rem;
+  color: var(--primary-color) !important;
+}
+
+#firmwareDescription {
+  line-height: 1.4;
+  color: var(--dark-light) !important;
+}
+
+.firmware-info .d-flex span {
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+}
+
+.firmware-info .bi {
+  color: var(--primary-color);
+  font-size: 0.85em;
+}
+
+#clearFirmwareInfo {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  border-radius: 0.375rem;
+  transition: all var(--transition-speed) var(--transition-ease);
+}
+
+#clearFirmwareInfo:hover {
+  background-color: var(--danger-color);
+  border-color: var(--danger-color);
+  color: white;
+  transform: scale(1.05);
+}
+
+.browser-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.browser-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0;
+  color: var(--dark-light);
+  font-weight: 500;
+}
+
+.browser-list li::before {
+  content: '✓';
+  color: var(--success-color);
+  font-weight: bold;
+}
+
+.current-browser {
+  background: linear-gradient(135deg, #fef2f2, #fee2e2);
+  border: 1px solid #fca5a5;
+  border-radius: 12px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.current-browser h4 {
+  color: var(--danger-color);
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.current-browser p {
+  margin: 0;
+  color: var(--dark-light);
+  font-weight: 500;
+}
+
+.warning-footer {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 2rem;
+}
+
+.warning-btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.warning-btn-primary {
+  background: linear-gradient(135deg, var(--danger-color), #f59e0b);
+  color: white;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+
+.warning-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+}
+
+.warning-btn-secondary {
+  background: #f1f5f9;
+  color: var(--dark-light);
+  border: 1px solid var(--border-color);
+}
+
+.warning-btn-secondary:hover {
+  background: #e2e8f0;
+  transform: translateY(-1px);
+}
+</style>
+</head>
+<body>
+    <div class="container-fluid px-3 py-3 py-md-4" style="max-width: 1400px;">
+        <div class="card shadow-lg border-0">
+            <div class="card-body p-3 p-md-4">
+                <!-- Header Section -->
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+                    <div>
+                        <h1 class="mb-2 fw-bold text-primary">
+                            <i class="bi bi-cpu me-2"></i>HDN77 — ESP32 Web Flasher
+                        </h1>
+                        <p class="text-muted mb-0">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Dùng Chrome/Edge. Kết nối USB → chọn firmware → flash.
+                        </p>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <div id="chipInfo" class="badge bg-secondary fs-6 py-2 px-3">
+                            <span class="status-indicator status-disconnected"></span>Chưa kết nối
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button id="connectBtn" class="btn btn-primary btn-lg">
+                                <i class="bi bi-usb-plug me-2"></i>Kết nối
+                            </button>
+                            <button id="disconnectBtn" class="btn btn-outline-danger btn-lg" disabled>
+                                <i class="bi bi-x-circle me-2"></i>Ngắt
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-3">
+
+                <!-- Main Content in 2 Columns for Desktop -->
+                <div class="row g-4">
+                    <!-- Left Column: Firmware Selection & Controls -->
+                    <div class="col-12 col-xl-5">
+                        <!-- Firmware Selection Section -->
+                        <div class="mb-4">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-list-ul me-2"></i>Firmware từ danh sách (tự động tải)
+                        </label>
+                        <select id="firmwareList" class="form-select form-select-lg">
+                            <option value="">-- Đang tải danh sách firmware... --</option>
+                        </select>
+                        <div id="firmwareInfo" class="firmware-info d-none mt-2">
+                            <div class="firmware-details">
+                                <div class="d-flex justify-content-between align-items-start mb-1">
+                                    <div class="fw-semibold text-primary" id="firmwareName"></div>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" id="clearFirmwareInfo" title="Ẩn thông tin firmware">
+                                        <i class="bi bi-x"></i>
+                                    </button>
+                                </div>
+                                <div class="small text-muted mb-2" id="firmwareDescription"></div>
+                                <div class="d-flex gap-3 small text-muted mb-2">
+                                    <span><i class="bi bi-hdd me-1"></i><span id="firmwareSize"></span></span>
+                                    <span><i class="bi bi-geo-alt me-1"></i><span id="firmwareAddress"></span></span>
+                                    <span><i class="bi bi-tag me-1"></i><span id="firmwareVersion"></span></span>
+                                </div>
+                                <!-- Hardware Info Section -->
+                                <div id="hardwareInfo" class="small border-top pt-2 mt-2" style="border-color: rgba(102, 126, 234, 0.2) !important;">
+                                    <div class="fw-semibold text-secondary mb-1">
+                                        <i class="bi bi-cpu me-1"></i>Thông tin phần cứng:
+                                    </div>
+                                    <div class="d-flex gap-3 mb-1">
+                                        <span class="text-muted"><i class="bi bi-motherboard me-1"></i><span id="hardwareChip"></span></span>
+                                        <span class="text-muted"><i class="bi bi-memory me-1"></i><span id="hardwareFlashSize"></span></span>
+                                    </div>
+                                    <div class="mb-1">
+                                        <span class="text-muted small"><i class="bi bi-tools me-1"></i>Board tương thích: <span id="hardwareBoards"></span></span>
+                                    </div>
+                                    <div class="mb-1">
+                                        <span class="text-muted small"><i class="bi bi-lightning me-1"></i>Nguồn: <span id="hardwarePower"></span></span>
+                                    </div>
+                                    <div id="hardwareSpecialFeatures" class="small text-info d-none">
+                                        <i class="bi bi-star me-1"></i>Tính năng đặc biệt: <span id="specialFeaturesList"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+
+                        <!-- File Upload Section -->
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-cloud-upload me-2"></i>Hoặc upload file .bin (kéo thả được)
+                            </label>
+                            <div class="file-drop" id="fileDrop" style="min-height: 100px;">
+                                <input id="fileInput" type="file" accept=".bin" style="display:none">
+                                <div class="text-center">
+                                    <i class="bi bi-file-earmark-arrow-up fs-2 text-primary mb-1 d-block"></i>
+                                    <p class="mb-1 small">Kéo thả file .bin vào đây hoặc <a href="#" id="browseBtn" class="text-decoration-none fw-semibold">chọn file</a></p>
+                                    <div id="fileName" class="text-muted small mt-1"></div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <!-- Right Column: Controls, Progress, Log & Actions -->
+                    <div class="col-12 col-xl-7">
+                        <!-- Flash Controls Section -->
+                        <div class="d-flex flex-wrap align-items-center gap-3 mb-3">
+                            <div class="d-flex align-items-center gap-2">
+                                <label for="flashAddress" class="form-label mb-0 fw-semibold text-muted small">
+                                    <i class="bi bi-geo-alt me-1"></i>Địa chỉ flash:
+                                </label>
+                                <input type="text" id="flashAddress" value="0x00000" placeholder="0x00000"
+                                       class="form-control form-control-sm flash-address-input">
+                            </div>
+                            <button id="flashBtn" class="btn btn-success btn-lg" disabled>
+                                <i class="bi bi-lightning-charge me-2"></i>Bắt đầu nạp
+                            </button>
+                            <button id="eraseBtn" class="btn btn-outline-warning btn-lg" disabled>
+                                <i class="bi bi-trash me-2"></i>Xoá Flash
+                            </button>
+                        </div>
+                        <!-- Flash Status Notification -->
+                        <div id="flashStatusNotification" class="alert alert-info d-none mb-3" role="alert">
+                            <div class="d-flex align-items-center">
+                                <div class="spinner-border spinner-border-sm me-3" role="status">
+                                    <span class="visually-hidden">Đang tải...</span>
+                                </div>
+                                <div>
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    <strong>Bắt đầu ghi flash, vui lòng chờ đến khi có thông báo hoàn thành...</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Progress Section -->
+                        <div class="mb-3">
+                            <div id="progress" class="progress-custom">
+                                <i></i>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="text-muted">
+                                <i class="bi bi-graph-up me-1"></i>
+                                Tiến trình: <span id="percent" class="fw-semibold text-primary">0%</span>
+                            </div>
+                            <div class="text-muted" id="speedInfo">
+                                <i class="bi bi-speedometer2 me-1"></i>Tốc độ: --
+                            </div>
+                        </div>
+
+                        <!-- Log Section -->
+                        <div class="mb-3">
+                            <h3 class="h5 fw-semibold mb-2">
+                                <i class="bi bi-terminal me-2"></i>Log
+                            </h3>
+                            <pre id="log" class="log-terminal">Sẵn sàng để kết nối ESP32...</pre>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button id="clearLogBtn" class="btn btn-outline-secondary">
+                                <i class="bi bi-eraser me-2"></i>Xoá Log
+                            </button>
+                            <button id="openOfficialBtn" class="btn btn-outline-info">
+                                <i class="bi bi-globe me-2"></i>Công cụ chính thức
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-4" style="color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.3); font-size: 0.95rem;">
+            <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 12px; padding: 0.75rem 1.5rem; display: inline-block; border: 1px solid rgba(255,255,255,0.2);">
+                <i class="bi bi-github me-1"></i>
+                Created by <a href="https://www.facebook.com/DaNgocHuynh77/" target="_blank" class="text-decoration-none" style="color: #f093fb; font-weight: 600; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">HDN77</a>
+                • Thanks to <a href="https://github.com/TienHuyIoT" target="_blank" class="text-decoration-none" style="color: #87ceeb; font-weight: 600; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">TienHuyIoT</a>
+                • Powered by <a href="https://github.com/espressif/esptool-js" target="_blank" class="text-decoration-none" style="color: #87ceeb; font-weight: 600; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">esptool-js</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5.0 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js"></script>
+<script type="module">
+// Fix the import URL - remove the incorrect path
+import { ESPLoader, Transport } from "https://unpkg.com/esptool-js@0.5.4/bundle.js";
+
+const connectBtn = document.getElementById('connectBtn');
+const disconnectBtn = document.getElementById('disconnectBtn');
+const flashBtn = document.getElementById('flashBtn');
+const eraseBtn = document.getElementById('eraseBtn');
+const fileInput = document.getElementById('fileInput');
+const fileDrop = document.getElementById('fileDrop');
+const browseBtn = document.getElementById('browseBtn');
+const fileName = document.getElementById('fileName');
+const firmwareList = document.getElementById('firmwareList');
+const progressBar = document.querySelector('#progress > i');
+const percentEl = document.getElementById('percent');
+const logEl = document.getElementById('log');
+const chipInfoEl = document.getElementById('chipInfo');
+const speedInfo = document.getElementById('speedInfo');
+const clearLogBtn = document.getElementById('clearLogBtn');
+const openOfficialBtn = document.getElementById('openOfficialBtn');
+const flashAddressInput = document.getElementById('flashAddress');
+
+let device = null;
+let transport = null;
+let espLoader = null;
+let chip = null;
+let consoleBaudRate = 115200;
+
+const serialLib = !navigator.serial && navigator.usb ? serial : navigator.serial;
+
+let selectedFile = null;
+let startTime = 0;
+let firmwareDatabase = null;
+
+// Check if modules loaded correctly
+console.log('ESPLoader:', typeof ESPLoader);
+console.log('Transport:', typeof Transport);
+
+const espLoaderTerminal = {
+    clean() {
+        logEl.textContent = 'Log đã được xóa.';
+    },
+    writeLine(data) {
+        log(data);
+    },
+    write(data) {
+        log(data);
+    },
+};
+
+function log(...args){
+  const timestamp = new Date().toLocaleTimeString();
+  const message = args.map(a => (typeof a === 'object' ? JSON.stringify(a) : String(a))).join(' ');
+  logEl.textContent += `\n[${timestamp}] ${message}`;
+  logEl.scrollTop = logEl.scrollHeight;
+  console.log(...args);
+}
+
+function setProgress(percentage, bytesWritten = 0, totalBytes = 0) {
+  progressBar.style.width = percentage + '%';
+  percentEl.textContent = percentage + '%';
+  
+  if (bytesWritten && totalBytes && startTime) {
+    const elapsed = (Date.now() - startTime) / 1000;
+    const speed = (bytesWritten / elapsed / 1024).toFixed(1);
+    const remaining = totalBytes - bytesWritten;
+    const eta = remaining / (bytesWritten / elapsed);
+    speedInfo.textContent = `${speed} KB/s - ETA: ${eta.toFixed(0)}s`;
+  }
+}
+
+function updateConnectionStatus(connected, chipName = '') {
+  const indicator = chipInfoEl.querySelector('.status-indicator');
+  if (connected) {
+    indicator.className = 'status-indicator status-connected';
+    chipInfoEl.innerHTML = `<span class="status-indicator status-connected"></span>Kết nối: ${chipName}`;
+  } else {
+    indicator.className = 'status-indicator status-disconnected';
+    chipInfoEl.innerHTML = `<span class="status-indicator status-disconnected"></span>Chưa kết nối`;
+  }
+}
+
+function enableControls(connected) {
+  flashBtn.disabled = !connected || !selectedFile;
+  eraseBtn.disabled = !connected;
+  disconnectBtn.disabled = !connected;
+  connectBtn.disabled = connected;
+}
+
+function getFlashSizeFromId(flashId) {
+    // Flash ID format: [Manufacturer ID][Memory Type][Capacity]
+    // Capacity byte determines flash size
+    const capacityByte = (flashId >> 16) & 0xFF;
+    
+    // Common flash size mappings based on JEDEC standard
+    const flashSizes = {
+        0x10: '64KB',    // 2^16 bytes
+        0x11: '128KB',   // 2^17 bytes  
+        0x12: '256KB',   // 2^18 bytes
+        0x13: '512KB',   // 2^19 bytes
+        0x14: '1MB',     // 2^20 bytes
+        0x15: '2MB',     // 2^21 bytes
+        0x16: '4MB',     // 2^22 bytes
+        0x17: '8MB',     // 2^23 bytes
+        0x18: '16MB',    // 2^24 bytes
+        0x19: '32MB',    // 2^25 bytes
+        0x1A: '64MB',    // 2^26 bytes
+    };
+    
+    const manufacturer = flashId & 0xFF;
+    const memoryType = (flashId >> 8) & 0xFF;
+    
+    // Log detailed flash information
+    log(`Flash Manufacturer ID: 0x${manufacturer.toString(16).padStart(2, '0').toUpperCase()}`);
+    log(`Flash Memory Type: 0x${memoryType.toString(16).padStart(2, '0').toUpperCase()}`);
+    log(`Flash Capacity Code: 0x${capacityByte.toString(16).padStart(2, '0').toUpperCase()}`);
+    
+    // Get manufacturer name (based on JEDEC standard)
+    const manufacturerNames = {
+        0x20: 'Micron/Numonyx/ST',
+        0x68: 'Boya',
+        0x85: 'Puya',
+        0x8C: 'ESMT',
+        0x9D: 'ISSI',
+        0x1C: 'EON',
+        0xC2: 'MXIC',
+        0xC8: 'GigaDevice', 
+        0xEF: 'Winbond'
+        // Note: Add new manufacturers only with verified JEDEC documentation
+    };
+    
+    const manufacturerName = manufacturerNames[manufacturer] || `Unknown - ID 0x${manufacturer.toString(16).padStart(2, '0').toUpperCase()} (check JEDEC JEP106)`;
+    log(`Flash Manufacturer: ${manufacturerName}`);
+    
+    const flashSize = flashSizes[capacityByte];
+    if (flashSize) {
+        log(`Detected flash size: ${flashSize}`);
+        return flashSize;
+    } else {
+        log(`Unknown flash capacity code: 0x${capacityByte.toString(16).padStart(2, '0')}`);
+        return 'Unknown Size';
+    }
+}
+
+function parseFlashAddress(addressStr) {
+    // Remove whitespace and convert to lowercase
+    addressStr = addressStr.trim().toLowerCase();
+    
+    // Check if it starts with 0x
+    if (!addressStr.startsWith('0x')) {
+        throw new Error('Địa chỉ flash phải bắt đầu bằng "0x" (ví dụ: 0x10000)');
+    }
+    
+    // Remove 0x prefix and validate hex format
+    const hexStr = addressStr.slice(2);
+    if (!/^[0-9a-f]+$/.test(hexStr)) {
+        throw new Error('Địa chỉ flash chứa ký tự không hợp lệ. Chỉ được phép sử dụng 0-9, A-F');
+    }
+    
+    // Convert to integer
+    const address = parseInt(addressStr, 16);
+    
+    // Validate address range (should be reasonable for ESP32)
+    if (address < 0 || address > 0x400000) { // 4MB max
+        throw new Error('Địa chỉ flash không hợp lệ (0x0 - 0x400000)');
+    }
+    
+    // Check alignment (should be divisible by 4096 for flash sectors)
+    if (address % 4096 !== 0) {
+        log(`⚠️ Cảnh báo: Địa chỉ ${addressStr} không căn chỉnh với sector (4KB). Khuyến nghị sử dụng địa chỉ chia hết cho 0x1000`);
+    }
+    
+    return address;
+  }
+
+// Embedded Firmware Database - Avoid CORS issues with file:// protocol
+const EMBEDDED_FIRMWARE_DATABASE = {
+  "firmwareList": [
+    {
+      "id": "esp32_deep_sleep",
+      "name": "ESP32 Deep Sleep Demo",
+      "filename": "deep_sleep_demo.bin",
+      "flashAddress": "0x10000",
+      "path": "local://samples/deep_sleep_demo.bin",
+      "description": "Demo chế độ deep sleep để tiết kiệm pin - thức dậy bằng timer hoặc GPIO",
+      "size": "198KB",
+      "version": "1.3.1",
+      "category": "Power Management",
+      "note": "Phù hợp cho ESP32 module và board phát triển",
+      "hardware_version": "ESP32",
+      "hardware_info": {
+        "chip": "ESP32",
+        "flash_size": "4MB",
+        "compatible_boards": ["ESP32 DevKit", "ESP32 WROOM", "ESP32 NodeMCU"],
+        "minimum_requirements": {
+          "flash": "1MB",
+          "ram": "320KB"
+        },
+        "gpio_requirements": ["GPIO2 for LED", "GPIO0 for wake-up button"],
+        "power_requirements": "3.3V, low power design"
+      }
+    },
+    {
+      "id": "xiaozhi_music_v2.0.4",
+      "name": "Xiaozhi Music V2.0.4",
+      "filename": "esp32s3_xiaozhi_music_v2.0.4.bin",
+      "flashAddress": "0x00000",
+      "path": "https://cdn.jsdelivr.net/gh/TienHuyIoT/esp_web_flasher@master/samples/esp32s3_xiaozhi_music_v2.0.4.bin",
+      "description": "Firmware board TÍM OLED AI Xiaozhi Music Việt Nam",
+      "size": "8,743KB",
+      "version": "2.0.4",
+      "category": "AI Xiaozhi",
+      "note": "Chỉ dành cho ESP32-S3 module",
+      "hardware_version": "ESP32-S3",
+      "hardware_info": {
+        "chip": "ESP32-S3",
+        "flash_size": "16MB",
+        "compatible_boards": ["bread-compact-wifi"],
+        "minimum_requirements": {
+          "flash": "8MB",
+          "ram": "512KB",
+          "psram": "2MB"
+        },
+        "gpio_requirements": [
+          "I2S for audio output",
+          "I2C for OLED display",
+          "GPIO for touch buttons",
+          "UART for debugging"
+        ],
+        "power_requirements": "5V via USB",
+        "special_features": [
+          "Built-in OLED display (128x64)",
+          "Audio codec support"
+        ]
+      }
+    }
+  ],
+  "categories": [
+    "AI Xiaozhi",
+    "Basic Examples",
+    "WiFi Examples", 
+    "Web Examples",
+    "IoT Examples",
+    "Bluetooth Examples",
+    "BLE Examples",
+    "Power Management",
+    "Camera Examples"
+  ],
+  "metadata": {
+    "version": "1.0.0",
+    "lastUpdated": "2025-11-08",
+    "description": "ESP32 firmware collection for web flasher",
+    "author": "TienHuyIoT"
+  }
+};
+
+// Firmware Database Functions
+async function loadFirmwareDatabase() {
+    try {
+        log('Đang tải danh sách firmware...');
+        
+        // First try to fetch external firmware.json (for HTTP server)
+        if (window.location.protocol !== 'file:') {
+            try {
+                const response = await fetch('./firmware.json');
+                if (response.ok) {
+                    firmwareDatabase = await response.json();
+                    log(`✅ Đã tải ${firmwareDatabase.firmwareList.length} firmware từ file external`);
+                    populateFirmwareList();
+                    return;
+                }
+            } catch (fetchError) {
+                log(`⚠️ Không thể tải file external, sử dụng embedded database`);
+            }
+        }
+        
+        // Use embedded database (for file:// protocol or fallback)
+        firmwareDatabase = EMBEDDED_FIRMWARE_DATABASE;
+        log(`✅ Đã tải ${firmwareDatabase.firmwareList.length} firmware từ embedded database`);
+        log(`📋 Database version: ${firmwareDatabase.metadata.version} (${firmwareDatabase.metadata.lastUpdated})`);
+        
+        populateFirmwareList();
+        
+    } catch (error) {
+        log(`❌ Lỗi tải firmware database: ${error.message}`);
+        
+        // Final fallback to default options
+        const fallbackOptions = [
+            { id: 'sample1', name: 'ESP32 Blink LED (Offline)', description: 'Sample firmware - offline mode', category: 'Basic Examples' },
+            { id: 'sample2', name: 'ESP32 WiFi Scanner (Offline)', description: 'Sample firmware - offline mode', category: 'WiFi Examples' },
+            { id: 'sample3', name: 'ESP32 Web Server (Offline)', description: 'Sample firmware - offline mode', category: 'Web Examples' }
+        ];
+        
+        firmwareDatabase = {
+            firmwareList: fallbackOptions,
+            categories: ['Basic Examples', 'WiFi Examples', 'Web Examples']
+        };
+        
+        const firmwareListEl = document.getElementById('firmwareList');
+        firmwareListEl.innerHTML = '<option value="">-- Chọn firmware mẫu (offline) --</option>';
+        
+        fallbackOptions.forEach(fw => {
+            const option = document.createElement('option');
+            option.value = fw.id;
+            option.textContent = fw.name;
+            firmwareListEl.appendChild(option);
+        });
+        
+        log(`💡 Đã sử dụng fallback database với ${fallbackOptions.length} firmware mẫu`);
+    }
+}
+
+function populateFirmwareList() {
+    const firmwareListEl = document.getElementById('firmwareList');
+    
+    // Clear loading state
+    firmwareListEl.innerHTML = '<option value="">-- Chọn firmware từ danh sách --</option>';
+    
+    // Group by category
+    const categories = {};
+    firmwareDatabase.firmwareList.forEach(fw => {
+        if (!categories[fw.category]) {
+            categories[fw.category] = [];
+        }
+        categories[fw.category].push(fw);
+    });
+    
+    // Add options grouped by category
+    Object.keys(categories).sort().forEach(category => {
+        const optgroup = document.createElement('optgroup');
+        optgroup.label = category;
+        
+        categories[category].forEach(fw => {
+            const option = document.createElement('option');
+            option.value = fw.id;
+            option.textContent = `${fw.name} (${fw.size})`;
+            option.dataset.firmware = JSON.stringify(fw);
+            optgroup.appendChild(option);
+        });
+        
+        firmwareListEl.appendChild(optgroup);
+    });
+}
+
+// Synchronize log terminal height with left column content
+function syncLogHeight() {
+    // Only apply on desktop screens (xl and above)
+    if (window.innerWidth >= 1200) {
+        const leftColumn = document.querySelector('.col-xl-5');
+        const rightColumn = document.querySelector('.col-xl-7');
+        const logTerminal = document.getElementById('log');
+        
+        if (leftColumn && rightColumn && logTerminal) {
+            // Get the height of left column content
+            const leftHeight = leftColumn.offsetHeight;
+            
+            // Get right column elements above log terminal
+            const rightColumnElements = rightColumn.children;
+            let elementsHeight = 0;
+            
+            // Calculate height of all elements above log terminal
+            for (let i = 0; i < rightColumnElements.length; i++) {
+                const element = rightColumnElements[i];
+                if (element.contains(logTerminal)) {
+                    // This is the log section, calculate remaining height
+                    const logSection = element;
+                    const logHeader = logSection.querySelector('.h5');
+                    
+                    // Calculate available height for log terminal
+                    const availableHeight = leftHeight - elementsHeight - (logHeader ? logHeader.offsetHeight + 16 : 40) - 20; // 20px margin
+                    
+                    // Set minimum and maximum constraints
+                    const minHeight = 300;
+                    const maxHeight = 600;
+                    const finalHeight = Math.max(minHeight, Math.min(maxHeight, availableHeight));
+                    
+                    logTerminal.style.height = finalHeight + 'px';
+                    break;
+                } else {
+                    // Add up heights of elements above log terminal
+                    elementsHeight += element.offsetHeight + 24; // 24px for mb-3 margin
+                }
+            }
+        }
+    } else {
+        // Reset height for smaller screens
+        const logTerminal = document.getElementById('log');
+        if (logTerminal) {
+            logTerminal.style.height = '';
+        }
+    }
+}
+
+function showFirmwareInfo(firmware) {
+    const firmwareInfo = document.getElementById('firmwareInfo');
+    const firmwareName = document.getElementById('firmwareName');
+    const firmwareDescription = document.getElementById('firmwareDescription');
+    const firmwareSize = document.getElementById('firmwareSize');
+    const firmwareAddress = document.getElementById('firmwareAddress');
+    const firmwareVersion = document.getElementById('firmwareVersion');
+    
+    // Hardware info elements
+    const hardwareInfo = document.getElementById('hardwareInfo');
+    const hardwareChip = document.getElementById('hardwareChip');
+    const hardwareFlashSize = document.getElementById('hardwareFlashSize');
+    const hardwareBoards = document.getElementById('hardwareBoards');
+    const hardwarePower = document.getElementById('hardwarePower');
+    const hardwareSpecialFeatures = document.getElementById('hardwareSpecialFeatures');
+    const specialFeaturesList = document.getElementById('specialFeaturesList');
+    
+    if (!firmware) {
+        firmwareInfo.classList.add('d-none');
+        // Sync log height when firmware info is hidden
+        setTimeout(() => {
+            syncLogHeight();
+        }, 100);
+        return;
+    }
+    
+    // Basic firmware info
+    firmwareName.textContent = firmware.name;
+    firmwareDescription.textContent = firmware.description;
+    firmwareSize.textContent = firmware.size;
+    firmwareAddress.textContent = firmware.flashAddress;
+    firmwareVersion.textContent = `v${firmware.version}`;
+    
+    // Hardware info
+    if (firmware.hardware_info) {
+        const hwInfo = firmware.hardware_info;
+        
+        hardwareChip.textContent = hwInfo.chip || firmware.hardware_version || 'Unknown';
+        hardwareFlashSize.textContent = hwInfo.flash_size || 'N/A';
+        
+        // Compatible boards
+        if (hwInfo.compatible_boards && hwInfo.compatible_boards.length > 0) {
+            hardwareBoards.textContent = hwInfo.compatible_boards.join(', ');
+        } else {
+            hardwareBoards.textContent = 'N/A';
+        }
+        
+        // Power requirements
+        hardwarePower.textContent = hwInfo.power_requirements || 'N/A';
+        
+        // Special features
+        if (hwInfo.special_features && hwInfo.special_features.length > 0) {
+            specialFeaturesList.textContent = hwInfo.special_features.join(', ');
+            hardwareSpecialFeatures.classList.remove('d-none');
+        } else {
+            hardwareSpecialFeatures.classList.add('d-none');
+        }
+        
+        hardwareInfo.classList.remove('d-none');
+    } else {
+        // If no hardware info, show basic hardware version if available
+        if (firmware.hardware_version) {
+            hardwareChip.textContent = firmware.hardware_version;
+            hardwareFlashSize.textContent = 'N/A';
+            hardwareBoards.textContent = 'N/A';
+            hardwarePower.textContent = 'N/A';
+            hardwareSpecialFeatures.classList.add('d-none');
+            hardwareInfo.classList.remove('d-none');
+        } else {
+            hardwareInfo.classList.add('d-none');
+        }
+    }
+    
+    // Update flash address input
+    flashAddressInput.value = firmware.flashAddress;
+    
+    // Trigger validation
+    flashAddressInput.dispatchEvent(new Event('input'));
+    
+    firmwareInfo.classList.remove('d-none');
+    
+    // Sync log height after firmware info is displayed
+    setTimeout(() => {
+        syncLogHeight();
+    }, 100); // Small delay to ensure DOM is updated
+}
+
+async function downloadFirmware(firmware) {
+    try {
+        log(`📥 Đang tải firmware: ${firmware.name}`);
+        
+        let url = firmware.path;
+        let fallbackUrls = [];
+        
+        // Handle different path types and create fallback URLs
+        if (url.startsWith('local://')) {
+            // Local file path - remove local:// prefix and use relative path
+            url = './' + url.replace('local://', '');
+            // log(`📁 Đường dẫn local: ${url}`); // Ẩn log đường dẫn
+        } else if (url.startsWith('http://') || url.startsWith('https://')) {
+            
+            // log(`🌐 Đường dẫn remote: ${url}`); // Ẩn log đường dẫn
+            // Create fallback URLs for GitHub
+            if (url.includes('github.com')) {
+                if (url.includes('jsdelivr.net')) {
+                    // If using jsdelivr, try raw GitHub as fallback
+                    fallbackUrls.push(url.replace('https://cdn.jsdelivr.net/gh/', 'https://github.com/').replace('@master', '/raw/master'));
+                } else if (url.includes('/raw/')) {
+                    // If using raw, try jsdelivr as fallback
+                    fallbackUrls.push(url.replace('https://github.com/', 'https://cdn.jsdelivr.net/gh/').replace('/raw/master', '@master'));
+                } else if (url.includes('/blob/')) {
+                    // Convert blob to raw and add jsdelivr fallback
+                    const rawUrl = url.replace('/blob/', '/raw/');
+                    fallbackUrls.push(rawUrl);
+                    fallbackUrls.push(rawUrl.replace('https://github.com/', 'https://cdn.jsdelivr.net/gh/').replace('/raw/master', '@master'));
+                }
+            }
+        } else {
+            throw new Error('Định dạng đường dẫn không hợp lệ');
+        }
+        
+        // Try main URL first, then fallbacks
+        const urlsToTry = [url, ...fallbackUrls];
+        let lastError = null;
+        
+        for (let i = 0; i < urlsToTry.length; i++) {
+            const tryUrl = urlsToTry[i];
+            try {
+                log(`🔄 Đang thử tải xuống (lần ${i + 1}/${urlsToTry.length})...`);
+                
+                const response = await fetch(tryUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/octet-stream',
+                    },
+                    mode: 'cors',
+                    cache: 'no-cache'
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const contentType = response.headers.get('content-type');
+                log(`📋 Content-Type: ${contentType}`);
+                
+                const arrayBuffer = await response.arrayBuffer();
+                
+                if (arrayBuffer.byteLength === 0) {
+                    throw new Error('File rỗng (0 bytes)');
+                }
+                
+                const blob = new Blob([arrayBuffer], { type: 'application/octet-stream' });
+                const file = new File([blob], firmware.filename, { type: 'application/octet-stream' });
+                
+                log(`✅ Đã tải thành công: ${firmware.filename} (${(arrayBuffer.byteLength / 1024).toFixed(1)}KB)`);
+                
+                return file;
+                
+            } catch (error) {
+                lastError = error;
+                log(`⚠️ Thất bại với URL ${i + 1}/${urlsToTry.length}: ${error.message}`);
+                
+                if (i < urlsToTry.length - 1) {
+                    log(`🔄 Thử URL tiếp theo...`);
+                }
+            }
+        }
+        
+        // All URLs failed
+        throw lastError || new Error('Không thể tải firmware từ bất kỳ URL nào');
+        
+    } catch (error) {
+        log(`❌ Lỗi tải firmware: ${error.message}`);
+        
+        // Detailed error logging
+        if (error.name === 'TypeError' && error.message.includes('fetch')) {
+            log(`💡 Gợi ý: Kiểm tra kết nối mạng hoặc CORS policy`);
+        } else if (error.message.includes('404')) {
+            log(`💡 Gợi ý: File không tồn tại trên server`);
+        } else if (error.message.includes('403')) {
+            log(`💡 Gợi ý: Không có quyền truy cập file`);
+        }
+        
+        throw error;
+    }
+}
+
+// File handling
+browseBtn.addEventListener('click', (e) => {
+  e.preventDefault();
+  fileInput.click();
+});
+
+fileInput.addEventListener('change', (e) => {
+  handleFileSelect(e.target.files[0]);
+});
+
+// Drag & Drop
+fileDrop.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  fileDrop.classList.add('dragover');
+});
+
+fileDrop.addEventListener('dragleave', (e) => {
+  e.preventDefault();
+  fileDrop.classList.remove('dragover');
+});
+
+fileDrop.addEventListener('drop', (e) => {
+  e.preventDefault();
+  fileDrop.classList.remove('dragover');
+  
+  const files = e.dataTransfer.files;
+  if (files.length > 0) {
+    handleFileSelect(files[0]);
+  }
+});
+
+function handleFileSelect(file) {
+  if (!file) return;
+  
+  if (!file.name.endsWith('.bin')) {
+    alert('Chỉ chấp nhận file .bin');
+    return;
+  }
+  
+  if (file.size > 16 * 1024 * 1024) {
+    alert('File quá lớn (> 16MB)');
+    return;
+  }
+  
+  selectedFile = file;
+  fileName.textContent = `📁 ${file.name} (${(file.size/1024/1024).toFixed(2)}MB)`;
+  log(`Đã chọn file: ${file.name}`);
+  
+  if (espLoader) {
+    flashBtn.disabled = false;
+  }
+}
+
+// Connection
+connectBtn.addEventListener('click', async () => {
+  try {
+    log('Đang yêu cầu kết nối thiết bị...');
+    if (device === null) {
+      device = await serialLib.requestPort({});
+      transport = new Transport(device, true);
+    }
+
+    const loaderOptions = {
+      transport: transport,
+      baudrate: consoleBaudRate,
+      terminal: espLoaderTerminal,
+      debugLogging: false,
+    };
+
+    espLoader = new ESPLoader(loaderOptions);
+    chip = await espLoader.main();
+    
+    const chipName = espLoader.chip.CHIP_NAME || 'ESP32';
+    log(`Kết nối thành công với ${chipName}`);
+    
+    // Read flash ID to get accurate flash size
+    log('Đang đọc thông tin flash memory...');
+    try {
+        const flashId = await espLoader.readFlashId();
+        log(`Flash ID: 0x${flashId.toString(16).padStart(6, '0').toUpperCase()}`);
+        
+        // Extract flash size from flash ID
+        const flashSize = getFlashSizeFromId(flashId);
+        
+        updateConnectionStatus(true, `${chipName} (${flashSize})`);
+    } catch (flashError) {
+        log(`Không thể đọc flash ID: ${flashError.message}`);
+        log('Sử dụng thông tin flash mặc định');
+        updateConnectionStatus(true, `${chipName} (Flash: Unknown)`);
+    }
+    
+    enableControls(true);
+    
+  } catch (err) {
+    log('Lỗi kết nối:', err.message);
+    alert('Lỗi kết nối: ' + err.message);
+    updateConnectionStatus(false);
+    enableControls(false);
+  }
+});
+
+disconnectBtn.addEventListener('click', async () => {
+  if (transport) await transport.disconnect();
+
+  // logEl.textContent = 'Log đã được xóa.';
+  espLoader = null;
+  device = null;
+  transport = null;
+  chip = null;
+  
+  log('Đã ngắt kết nối');
+  updateConnectionStatus(false);
+  enableControls(false);
+  setProgress(0);
+  speedInfo.textContent = 'Tốc độ: --';
+});
+
+// Erase flash
+eraseBtn.addEventListener('click', async () => {
+  if (!espLoader) return alert('Chưa kết nối thiết bị');
+  
+  if (!confirm('Bạn có chắc muốn xóa toàn bộ flash memory?')) return;
+  
+  try {
+    log('Bắt đầu xóa flash memory...');
+    setProgress(0);
+    
+    await espLoader.eraseFlash();
+    
+    setProgress(100);
+    log('Xóa flash thành công!');
+    
+  } catch (err) {
+    log('Lỗi xóa flash:', err.message);
+    alert('Lỗi: ' + err.message);
+  }
+});
+
+// Flash firmware
+flashBtn.addEventListener('click', async () => {
+  if (!espLoader) return alert('Chưa kết nối thiết bị');
+  if (!selectedFile) return alert('Chưa chọn file firmware');
+  
+  const flashStatusNotification = document.getElementById('flashStatusNotification');
+
+  const readUploadedFileAsBinaryString = (inputFile) => {
+      const reader = new FileReader();
+
+      return new Promise((resolve, reject) => {
+          reader.onerror = () => {
+              reader.abort();
+              reject(new DOMException("Problem parsing input file."));
+          };
+
+          reader.onload = () => {
+              resolve(reader.result);
+          };
+          reader.readAsBinaryString(inputFile);
+      });
+  };
+  
+  try {
+    // Show flash status notification
+    flashStatusNotification.classList.remove('d-none');
+    
+    log(`Bắt đầu nạp firmware: ${selectedFile.name}`);
+    setProgress(0);
+    startTime = Date.now();
+    
+    // const fileData = new Uint8Array(await selectedFile.arrayBuffer());
+    let fileData = await readUploadedFileAsBinaryString(selectedFile);
+    log(`Đã đọc file: ${fileData.length} bytes`);
+    
+    // Parse flash address from input
+    let flashAddress;
+    try {
+        flashAddress = parseFlashAddress(flashAddressInput.value);
+        log(`Địa chỉ flash: ${flashAddressInput.value} (${flashAddress})`);
+    } catch (error) {
+        alert('Lỗi địa chỉ flash: ' + error.message);
+        return;
+    }
+
+    const fileArray = [];
+    fileArray.push({ data: fileData, address: flashAddress });
+
+    const flashOptions = {
+      fileArray: fileArray,
+      flashSize: "keep",
+      flashMode: undefined,  // Để esptool-js tự động detect mode phù hợp (QIO/DIO/DOUT)
+      flashFreq: undefined,  // Để esptool-js tự động detect frequency (40MHz/80MHz)
+      eraseAll: false,
+      compress: true,
+      reportProgress: (fileIndex, written, total) => {
+        const progress = Math.round((written / total) * 100);
+        setProgress(progress, written, total);
+      },
+      calculateMD5Hash: (image) => CryptoJS.MD5(CryptoJS.enc.Latin1.parse(image)),
+    };
+    log('⚠️ Bắt đầu ghi flash, vui lòng chờ đến khi có thông báo hoàn thành...');
+    await espLoader.writeFlash(flashOptions);
+    
+    setProgress(100);
+    
+    // Hide flash status notification on success
+    flashStatusNotification.classList.add('d-none');
+    
+    log('Nạp firmware thành công!');
+    log('Bạn có thể reset ESP32 để chạy firmware mới');
+    
+    // Reset the device
+    if (confirm('Nạp thành công! Bạn có muốn reset ESP32 không?')) {
+      try {
+        if (transport) {
+            await transport.disconnect();
+        }
+        await transport.connect(consoleBaudRate);
+        await transport.setDTR(false);
+        await new Promise(resolve => setTimeout(resolve, 100));
+        await transport.setDTR(true);
+        log('Đã reset ESP32');
+      } catch (resetErr) {
+        log('Không thể reset tự động, vui lòng reset thủ công');
+      }
+    }
+    
+  } catch (err) {
+    // Hide flash status notification on error
+    flashStatusNotification.classList.add('d-none');
+    
+    log('Lỗi nạp firmware:', err.message);
+    alert('Lỗi nạp firmware: ' + err.message);
+  }
+});
+
+// Firmware selection from database
+firmwareList.addEventListener('change', async (e) => {
+    const selected = e.target.value;
+    const selectedOption = e.target.options[e.target.selectedIndex];
+    
+    if (!selected) {
+        showFirmwareInfo(null);
+        return;
+    }
+    
+    // Check if it's a fallback option (offline mode)
+    if (selected.startsWith('sample')) {
+        log(`Đang tải firmware mẫu (offline): ${selectedOption.textContent}`);
+        
+        // Create a sample firmware file for offline mode
+        const sampleData = new Uint8Array(1024); // 1KB sample
+        sampleData.fill(0xFF); // Fill with 0xFF (typical for flash)
+        
+        const blob = new Blob([sampleData], { type: 'application/octet-stream' });
+        const file = new File([blob], `${selected}.bin`, { type: 'application/octet-stream' });
+        
+        handleFileSelect(file);
+        
+        // Reset selection
+        e.target.value = '';
+        return;
+    }
+    
+    try {
+        // Parse firmware data from dataset
+        const firmware = JSON.parse(selectedOption.dataset.firmware);
+        
+        // Show firmware info
+        showFirmwareInfo(firmware);
+        
+        // Download and select firmware
+        const file = await downloadFirmware(firmware);
+        handleFileSelect(file);
+        
+        // Keep firmware info visible after successful download
+        // Reset only the selection dropdown
+        setTimeout(() => {
+            e.target.value = '';
+            // Keep firmware info displayed - don't call showFirmwareInfo(null)
+        }, 100);
+        
+    } catch (error) {
+        alert(`Lỗi tải firmware: ${error.message}`);
+        log(`❌ Chi tiết lỗi: ${error.stack || error.message}`);
+        
+        // Hide firmware info only on error
+        setTimeout(() => {
+            e.target.value = '';
+            showFirmwareInfo(null);
+        }, 100);
+    }
+});
+
+// Clear log
+clearLogBtn.addEventListener('click', () => {
+  logEl.textContent = 'Log đã được xóa.';
+});
+
+// Clear firmware info
+document.getElementById('clearFirmwareInfo').addEventListener('click', () => {
+    showFirmwareInfo(null);
+    log('Đã ẩn thông tin firmware');
+});
+
+// Open official tool
+openOfficialBtn.addEventListener('click', () => {
+  window.open('https://espressif.github.io/esptool-js/', '_blank');
+});
+
+// Flash address input validation
+flashAddressInput.addEventListener('input', (e) => {
+    const value = e.target.value.trim();
+    
+    // Reset styles
+    e.target.style.borderColor = '';
+    e.target.style.backgroundColor = '';
+    
+    if (value === '') {
+        e.target.style.borderColor = '#ef4444';
+        return;
+    }
+    
+    try {
+        parseFlashAddress(value);
+        // Valid address
+        e.target.style.borderColor = '#10b981';
+        e.target.style.backgroundColor = '#f0fdf4';
+    } catch (error) {
+        // Invalid address
+        e.target.style.borderColor = '#ef4444';
+        e.target.style.backgroundColor = '#fef2f2';
+    }
+});
+
+// Add some common flash addresses as suggestions
+flashAddressInput.addEventListener('focus', (e) => {
+    if (!e.target.hasAttribute('data-initialized')) {
+        e.target.setAttribute('data-initialized', 'true');
+        e.target.setAttribute('title', 'Địa chỉ thông dụng:\n0x1000 - Bootloader\n0x8000 - Partition table\n0x10000 - Application (mặc định)\n0x110000 - OTA app partition');
+    }
+});
+
+// Initialize
+log('ESP32 Web Flasher đã sẵn sàng');
+log('Hãy kết nối ESP32, Nhập mật khẩu và chọn file firmware để bắt đầu');
+
+// Check if running from file:// protocol
+if (window.location.protocol === 'file:') {
+  log('⚠️ Chạy từ file:// protocol - sử dụng embedded firmware database');
+  log('💡 Khuyến nghị: Sử dụng Live Server hoặc HTTP server để load external firmware.json');
+} else {
+  log(`🌐 Chạy từ ${window.location.protocol} - có thể load external firmware.json`);
+}
+
+// Create warning modal
+function createWarningModal() {
+    const modal = document.createElement('div');
+    modal.className = 'warning-modal';
+    modal.id = 'browserWarningModal';
+    
+    const currentBrowser = navigator.userAgent.includes('Firefox') ? 'Firefox' : 
+                          navigator.userAgent.includes('Safari') && !navigator.userAgent.includes('Chrome') ? 'Safari' : 
+                          navigator.userAgent.includes('Opera') ? 'Opera' :
+                          'Trình duyệt không hỗ trợ';
+    
+    modal.innerHTML = `
+        <div class="warning-content">
+            <div class="warning-header">
+                <div class="warning-icon">
+                    <i class="bi bi-exclamation-triangle"></i>
+                </div>
+                <h2 class="warning-title">Cảnh báo trình duyệt</h2>
+            </div>
+            
+            <div class="warning-message">
+                <p>Trang web ESP32 Web Flasher cần sử dụng <strong>Web Serial API</strong> để kết nối với thiết bị ESP32. API này chỉ được hỗ trợ trên một số trình duyệt nhất định.</p>
+            </div>
+            
+            <div class="warning-browsers">
+                <h4><i class="bi bi-check-circle-fill"></i> Trình duyệt được hỗ trợ:</h4>
+                <ul class="browser-list">
+                    <li><strong>Google Chrome</strong> (khuyến nghị)</li>
+                    <li><strong>Microsoft Edge</strong></li>
+                </ul>
+            </div>
+            
+            <div class="current-browser">
+                <h4><i class="bi bi-x-circle-fill"></i> Trình duyệt hiện tại:</h4>
+                <p><strong>${currentBrowser}</strong> - Không hỗ trợ Web Serial API</p>
+            </div>
+            
+            <div class="warning-message">
+                <p><i class="bi bi-info-circle"></i> Vui lòng mở trang này bằng <strong>Chrome</strong> hoặc <strong>Edge</strong> để sử dụng đầy đủ tính năng flash ESP32.</p>
+            </div>
+            
+            <div class="warning-footer">
+                <button class="warning-btn warning-btn-primary" onclick="closeWarningModal()">
+                    <i class="bi bi-x-lg"></i> Đóng
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    return modal;
+}
+
+// Show warning modal
+function showWarningModal() {
+    const modal = document.getElementById('browserWarningModal') || createWarningModal();
+    setTimeout(() => {
+        modal.classList.add('show');
+    }, 10);
+}
+
+// Close warning modal
+function closeWarningModal() {
+    const modal = document.getElementById('browserWarningModal');
+    if (modal) {
+        modal.classList.remove('show');
+        setTimeout(() => {
+            modal.remove();
+        }, 300);
+    }
+}
+
+// Make functions global for onclick handlers
+window.closeWarningModal = closeWarningModal;
+
+// Browser compatibility check
+function checkBrowserCompatibility() {
+    const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+    const isEdge = /Edg/.test(navigator.userAgent);
+    
+    if (!isChrome && !isEdge) {
+        // Show beautiful warning modal
+        showWarningModal();
+        
+        // Also disable connect button
+        connectBtn.disabled = true;
+        connectBtn.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i>Trình duyệt không hỗ trợ';
+        connectBtn.title = 'Vui lòng sử dụng Chrome hoặc Edge';
+        
+        return false;
+    }
+    
+    return true;
+}
+
+// Add browser compatibility check to DOMContentLoaded  
+document.addEventListener('DOMContentLoaded', async () => {
+    log('ESP32 Web Flasher đã sẵn sàng');
+    
+    // Check browser compatibility first
+    const isCompatible = checkBrowserCompatibility();
+    
+    if (isCompatible) {
+        log('✅ Trình duyệt tương thích');
+        log('Hãy kết nối ESP32 và chọn file firmware để bắt đầu');
+    } else {
+        log('❌ Trình duyệt không tương thích');
+    }
+
+    // Check if running from file:// protocol
+    if (window.location.protocol === 'file:') {
+        log('⚠️ Chạy từ file:// protocol - firmware database được nhúng sẵn');
+        log('💡 Khuyến nghị: Sử dụng Live Server hoặc HTTP server để load external firmware.json');
+    } else {
+        log(`🌐 Chạy từ ${window.location.protocol} - sẽ thử load external firmware.json`);
+    }
+    
+    // Load firmware database
+    await loadFirmwareDatabase();
+    
+    // Initial sync log height
+    setTimeout(() => {
+        syncLogHeight();
+    }, 500);
+});
+
+// Window resize event listener to sync log height
+window.addEventListener('resize', () => {
+    // Debounce resize events
+    clearTimeout(window.resizeTimeout);
+    window.resizeTimeout = setTimeout(() => {
+        syncLogHeight();
+    }, 250);
+});
+
+</script>
+</body>
+</html>
