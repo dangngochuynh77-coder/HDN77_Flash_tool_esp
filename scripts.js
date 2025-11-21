@@ -497,7 +497,7 @@ async function downloadFirmware(firmware) {
             // log(`📁 Đường dẫn local: ${url}`); // Ẩn log đường dẫn
         } else if (url.startsWith('http://') || url.startsWith('https://')) {
             
-            // log(`🌐 Đường dẫn remote: ${url}`); // Ẩn log đường dẫn
+             //log(`🌐 Đường dẫn remote: ${url}`); // Ẩn log đường dẫn
             // Create fallback URLs for GitHub
             if (url.includes('github.com')) {
                 if (url.includes('jsdelivr.net')) {
