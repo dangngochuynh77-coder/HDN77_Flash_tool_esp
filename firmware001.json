@@ -74,4 +74,33 @@
         "minimum_requirements": {
           "flash": "8MB",
           "ram": "512KB",
-          "psram": "
+          "psram": "2MB"
+        },
+        "gpio_requirements": [
+          "I2S for audio output",
+          "SPI for TFT display",
+          "GPIO for touch buttons",
+          "UART for debugging"
+        ],
+        "power_requirements": "5V via USB"
+      }
+    }
+  ],
+  "categories": [
+    "AI Xiaozhi",
+    "Basic Examples",
+    "WiFi Examples",
+    "Web Examples",
+    "IoT Examples",
+    "Bluetooth Examples",
+    "BLE Examples",
+    "Power Management",
+    "Camera Examples"
+  ],
+  "metadata": {
+    "version": "1.0.0",
+    "lastUpdated": "2025-11-08",
+    "description": "ESP32 firmware collection for web flasher",
+    "author": "HDN77"
+  }
+}
