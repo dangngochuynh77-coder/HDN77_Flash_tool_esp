@@ -50,13 +50,18 @@
       "note": "Chỉ dành cho ESP32-S3 module",
       "hardware_version": "ESP32-S3",
       "features": [
-        "Tất cả tính năng của bản Free",
-        "Hỗ trợ đầy đủ các hành động nâng cao",
-        "Tích nghe nhạc Zmussic",
-        "Nghe radio online các kênh",
-        "Tra sổ xố các tỉnh thành",
-        "Tối ưu nghe nhạc, radio và hiển thị phổ nhạc sinh động",
-        "Cập nhật OTA"
+        1.Nghe nhạc zing.
+        2.Nghe radio tất cả các kênh.
+        3.Có thể hiển thị phổ nhạc khi nghe+radio ( mặc định hiển thị lyric )
+        4.Đặt báo thức, xem danh sách báo thức, xoá báo thức.( có thể thiết định số lần kêu báo thức trong cấu hình wifi) (âm báo thức giống của iphone)
+        5.Tra sổ xố
+        6.Tra giá vàng
+        7.Đọc tin tức vnexpress (có thể đọc chi tiết tin)
+        8.Hiện mã QR thanh toán (thiết định stk trong cấu hình wifi)
+        9.Hiện thị danh sách wifi đã lưu trong cấu hình wifi, tối ưu hoá việc tự động kết nối đến wifi mạnh nhất.
+        10.Thêm được server phát nhạc nếu thích (hoặc có) server khác.
+        11.Hiệu chỉnh được góc độ server ở vị trí đứng puppy của từng servo.
+        12.Có thể update OTA trực tiếp khi có bản update.
       ],
       "hardware_info": {
         "chip": "ESP32-S3",
