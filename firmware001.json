@@ -42,7 +42,7 @@
       "name": "Puppy_otto_full V2.0.4",
       "filename": "Puppy_otto_full.bin",
       "flashAddress": "0x00000",
-      "path": "https://cdn.jsdelivr.net/gh/dangngochuynh77-coder/ESP32_HDN77@master/fw/Puppy_HDN.bin",
+      "path": "https://cdn.jsdelivr.net/gh/dangngochuynh77-coder/ESP32_Test@master/fw/Puppy_HDN.bin",
       "description": "1Firmware Puppy by HDN; wake word: Puppy",
       "size": "9,748KB",
       "version": "2.0.4",
