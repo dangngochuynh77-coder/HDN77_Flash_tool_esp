@@ -5,7 +5,7 @@
       "name": "Puppy_otto_free V2.0.4",
       "filename": "Puppy_otto_free V2.0.4.bin",
       "flashAddress": "0x00000",
-     "path": "https://cdn.jsdelivr.net/gh/dangngochuynh77-coder/ESP32_Test@master/fw/FW_Puppy_HDN(Free).bin",
+      "path": "https://cdn.jsdelivr.net/gh/dangngochuynh77-coder/ESP32_Test@master/fw/FW_Puppy_HDN(Free).bin",
       "description": "Firmware Puppy by HDN; wake word: Puppy",
       "size": "12040.8KB",
       "version": "2.0.4",
@@ -22,7 +22,9 @@
       "hardware_info": {
         "chip": "ESP32-S3",
         "flash_size": "16MB",
-        "compatible_boards": ["Otto-robot"],
+        "compatible_boards": [
+          "Otto-robot"
+        ],
         "minimum_requirements": {
           "flash": "8MB",
           "ram": "512KB",
@@ -43,62 +45,33 @@
       "filename": "Puppy_otto_full.bin",
       "flashAddress": "0x00000",
       "path": "https://cdn.jsdelivr.net/gh/dangngochuynh77-coder/ESP32_Test@master/fw/Puppy_HDN.bin",
-      "description": "1Firmware Puppy by HDN; wake word: Puppy",
-      "size": "9,748KB",
+      "description": "Firmware Puppy by HDN; wake word: Puppy",
+      "size": "9748KB",
       "version": "2.0.4",
       "category": "AI Xiaozhi",
       "note": "Chỉ dành cho ESP32-S3 module",
       "hardware_version": "ESP32-S3",
       "features": [
-          "Nghe nhạc zing."
-          "Nghe radio tất cả các kênh."
-          "Có thể hiển thị phổ nhạc khi nghe+radio ( mặc định hiển thị lyric )."
-          "Đặt báo thức, xem danh sách báo thức, xoá báo thức.( có thể thiết định số lần kêu báo thức trong cấu hình wifi) (âm báo thức giống của iphone)."
-          "Tra sổ xố."
-          "Tra giá vàng."
-          "Đọc tin tức vnexpress (có thể đọc chi tiết tin)."
-          "Hiện mã QR thanh toán (thiết định stk trong cấu hình wifi)."
-          "Hiện thị danh sách wifi đã lưu trong cấu hình wifi, tối ưu hoá việc tự động kết nối đến wifi mạnh nhất."
-          "Thêm được server phát nhạc nếu thích (hoặc có) server khác."
-          "Hiệu chỉnh được góc độ server ở vị trí đứng puppy của từng servo."
-          "Có thể update OTA trực tiếp khi có bản update."
+        "Nghe nhạc zing.",
+        "Nghe radio tất cả các kênh.",
+        "Có thể hiển thị phổ nhạc khi nghe+radio ( mặc định hiển thị lyric ).",
+        "Đặt báo thức, xem danh sách báo thức, xoá báo thức.( có thể thiết định số lần kêu báo thức trong cấu hình wifi) (âm báo thức giống của iphone).",
+        "Tra sổ xố.",
+        "Tra giá vàng.",
+        "Đọc tin tức vnexpress (có thể đọc chi tiết tin).",
+        "Hiện mã QR thanh toán (thiết định stk trong cấu hình wifi).",
+        "Hiện thị danh sách wifi đã lưu trong cấu hình wifi, tối ưu hoá việc tự động kết nối đến wifi mạnh nhất.",
+        "Thêm được server phát nhạc nếu thích (hoặc có) server khác.",
+        "Hiệu chỉnh được góc độ server ở vị trí đứng puppy của từng servo.",
+        "Có thể update OTA trực tiếp khi có bản update."
       ],
       "hardware_info": {
         "chip": "ESP32-S3",
         "flash_size": "16MB",
-        "compatible_boards": ["Otto-robot"],
+        "compatible_boards": [
+          "Otto-robot"
+        ],
         "minimum_requirements": {
           "flash": "8MB",
           "ram": "512KB",
-          "psram": "2MB"
-        },
-        "gpio_requirements": [
-          "I2S for audio output",
-          "SPI for TFT display",
-          "GPIO for touch buttons",
-          "UART for debugging"
-        ],
-        "power_requirements": "5V via USB"
-        
-       
-      }
-    }
-  ],
-  "categories": [
-    "AI Xiaozhi",
-    "Basic Examples",
-    "WiFi Examples", 
-    "Web Examples",
-    "IoT Examples",
-    "Bluetooth Examples",
-    "BLE Examples",
-    "Power Management",
-    "Camera Examples"
-  ],
-  "metadata": {
-    "version": "1.0.0",
-    "lastUpdated": "2025-11-08",
-    "description": "ESP32 firmware collection for web flasher",
-    "author": "HDN77"
-  }
-}
+          "psram": "
