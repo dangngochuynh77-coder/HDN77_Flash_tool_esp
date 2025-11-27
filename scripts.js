@@ -1,6 +1,5 @@
 // ESP32 Web Flasher JavaScript
 import { ESPLoader, Transport } from "https://unpkg.com/esptool-js/bundle.js";
-
 // DOM Elements
 const connectBtn = document.getElementById('connectBtn');
 const disconnectBtn = document.getElementById('disconnectBtn');
