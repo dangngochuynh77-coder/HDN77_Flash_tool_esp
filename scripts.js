@@ -759,7 +759,7 @@ disconnectBtn.addEventListener('click', async () => {
     // Reset các trường liên quan đến MAC
     deviceMacAddressInput.value = '';
     macAddressDisplay.classList.add('d-none');
-    passwordHelp.textContent = 'Vui lòng kết nối thiết bị, nhấn nút [CPU] để lấy MAC, sau đó nhập mật khẩu tương ứng.';
+    passwordHelp.textContent = 'Vui lòng kết nối thiết bị,để lấy địa chỉ MAC, sau đó nhập mật khẩu tương ứng.';
     updateConnectionStatus(false);
     enableControls(false);
     setProgress(0);
