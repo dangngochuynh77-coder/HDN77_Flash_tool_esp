@@ -42,9 +42,9 @@
     {
       "id": "Puppy_otto_full",
       "name": "Puppy_otto_full V2.0.4",
-      "filename": "Puppy_otto_full.bin",
+      "filename": "merged-binary.bin",
       "flashAddress": "0x00000",
-      "path": "https://cdn.jsdelivr.net/gh/sumvipconbai/test@master/New%20folder/merged-binary.bin",
+      "path": "https://cdn.jsdelivr.net/gh/sumvipconbai/test@master/test/merged-binary.bin",
       "description": "Firmware Puppy by HDN; wake word: Puppy",
       "size": "9748KB",
       "version": "2.0.4",
