@@ -69,15 +69,21 @@
                         <div class="mb-4">
                          <div class="mb-3">
                             <label for="firmwarePassword" class="form-label fw-semibold">
-                                <i class="bi bi-key me-2"></i>Nhập mật khẩu để tải Firmware
+                                <i class="bi bi-key me-2"></i>Nhập mật khẩu để mở khóa Firmware Full
                             </label>
                             <div class="input-group">
                                 <input type="password" id="firmwarePassword" class="form-control" placeholder="Mật khẩu">
                                 <button class="btn btn-primary" type="button" id="verifyPasswordBtn">
                                     <i class="bi bi-lock-fill me-2"></i>Xác nhận
                                 </button>
+                                <button class="btn btn-outline-secondary d-none" type="button" id="getMacBtn" title="Lấy địa chỉ MAC của thiết bị" disabled>
+                                    <i class="bi bi-cpu"></i>
+                                </button>
                             </div>
-                             <div id="passwordHelp" class="form-text text-danger d-none">Mật khẩu không đúng.</div>
+                             <div id="passwordHelp" class="form-text">Vui lòng kết nối thiết bị, nhấn nút <i class="bi bi-cpu"></i> để lấy MAC, sau đó nhập mật khẩu tương ứng.</div>
+                             <div id="macAddressDisplay" class="form-text text-info fw-bold d-none mt-1"></div>
+                             <!-- Trường ẩn để lưu địa chỉ MAC -->
+                             <input type="hidden" id="deviceMacAddress">
                         </div>
 
                          <label class="form-label fw-semibold">

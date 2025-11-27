@@ -13,7 +13,10 @@ const fileName = document.getElementById('fileName');
 const firmwarePasswordInput = document.getElementById('firmwarePassword');
 const verifyPasswordBtn = document.getElementById('verifyPasswordBtn');
 const passwordHelp = document.getElementById('passwordHelp');
+const getMacBtn = document.getElementById('getMacBtn');
+const macAddressDisplay = document.getElementById('macAddressDisplay');
 const firmwareList = document.getElementById('firmwareList');
+const deviceMacAddressInput = document.getElementById('deviceMacAddress');
 const progressBar = document.querySelector('#progress > i');
 const percentEl = document.getElementById('percent');
 const logEl = document.getElementById('log');
@@ -45,8 +48,22 @@ const espLoaderTerminal = {
     clean() {
         logEl.textContent = 'Log đã được xóa.';
     },
-    writeLine(data) {
+    writeLine(data) { // Hàm này được esptool-js gọi để in log
         log(data);
+        // --- BẮT VÀ XỬ LÝ DÒNG LOG CHỨA ĐỊA CHỈ MAC ---
+        if (data.startsWith('MAC: ')) {
+            const macString = data.substring(5); // Cắt bỏ "MAC: "
+            log(`✅ Tự động nhận diện địa chỉ MAC: ${macString}`);
+            
+            // Cập nhật giao diện người dùng với địa chỉ MAC vừa tìm thấy
+            deviceMacAddressInput.value = macString;
+            macAddressDisplay.textContent = `Địa chỉ MAC của thiết bị: ${macString}`;
+            macAddressDisplay.classList.remove('d-none');
+            
+            passwordHelp.textContent = 'Đã có địa chỉ MAC. Bây giờ hãy nhập mật khẩu của bạn để mở khóa firmware full.';
+            passwordHelp.classList.remove('text-danger');
+            passwordHelp.classList.add('text-success');
+        }
     },
     write(data) {
         log(data);
@@ -91,6 +108,10 @@ function enableControls(connected) {
     eraseBtn.disabled = !connected;
     disconnectBtn.disabled = !connected;
     connectBtn.disabled = connected;
+    getMacBtn.disabled = !connected; // Kích hoạt/Vô hiệu hóa nút lấy MAC
+    if (!connected) {
+        macAddressDisplay.classList.add('d-none');
+    }
 }
 
 function handleFileSelect(file) {
@@ -217,18 +238,43 @@ function getFlashSizeFromId(flashId) {
     }
 }
 
+// --- THAY ĐỔI LOGIC XÁC THỰC MẬT KHẨU ---
 verifyPasswordBtn.addEventListener('click', async () => {
-    const password = firmwarePasswordInput.value;
-    const correctPassword = "7719958"; // Thay bằng mật khẩu thật của bạn
+    const mac = deviceMacAddressInput.value;
+    const enteredPassword = firmwarePasswordInput.value;
 
-    if (password === correctPassword) {
-        passwordHelp.classList.add('d-none');
+    if (!mac) {
+        passwordHelp.textContent = 'Vui lòng lấy địa chỉ MAC của thiết bị trước khi xác nhận mật khẩu.';
+        passwordHelp.classList.add('text-danger');
+        return;
+    }
+
+    if (!enteredPassword) {
+        passwordHelp.textContent = 'Vui lòng nhập mật khẩu.';
+        passwordHelp.classList.add('text-danger');
+        return;
+    }
+
+    // Bước 1: Tạo "mật khẩu đúng" từ địa chỉ MAC
+    // !!! QUAN TRỌNG: Key này phải được giữ bí mật và phải giống hệt với key bạn dùng để tạo mật khẩu cho người dùng.
+    const secretKey = "HDN77-Super-Secret-Key-2025";
+    const correctPasswordHash = CryptoJS.SHA256(mac + secretKey).toString();
+    
+    // Lấy 8 ký tự đầu của chuỗi hash làm mật khẩu để đơn giản hóa
+    const correctPassword = correctPasswordHash.substring(0, 8);
+
+    // Bước 2: So sánh mật khẩu người dùng nhập với mật khẩu đã tạo
+    if (enteredPassword === correctPassword) {
+        passwordHelp.textContent = 'Mật khẩu chính xác! Đang tải danh sách firmware đầy đủ...';
+        passwordHelp.classList.remove('text-danger');
+        passwordHelp.classList.add('text-success');
         firmwarePasswordInput.disabled = true;
         verifyPasswordBtn.disabled = true;
-        await loadFirmwareDatabase(); // Tải danh sách firmware đầy đủ
-        showFirmwareInfo(null);
+        await loadFirmwareDatabase(); // Tải danh sách firmware full
     } else {
-        passwordHelp.classList.remove('d-none');
+        passwordHelp.textContent = 'Mật khẩu không đúng. Vui lòng kiểm tra lại.';
+        passwordHelp.classList.add('text-danger');
+        firmwareList.classList.add('d-none'); // Ẩn danh sách nếu sai
     }
 });
 
@@ -688,6 +734,8 @@ connectBtn.addEventListener('click', async () => {
         
         enableControls(true);
         
+        // --- LOGIC LẤY MAC ĐÃ ĐƯỢC CHUYỂN VÀO espLoaderTerminal.writeLine ---
+        // Đoạn code ở đây không còn cần thiết nữa.
     } catch (err) {
         log('Lỗi kết nối:', err.message);
         alert('Lỗi kết nối: ' + err.message);
@@ -695,6 +743,10 @@ connectBtn.addEventListener('click', async () => {
         enableControls(false);
     }
 });
+
+// --- LOGIC LẤY MAC ĐÃ ĐƯỢC CHUYỂN VÀO HÀM CONNECT, NÚT NÀY KHÔNG CÒN CẦN THIẾT ---
+// Bạn có thể xóa hoàn toàn đoạn code này hoặc giữ lại để tham khảo.
+// getMacBtn.addEventListener('click', async () => { ... });
 
 disconnectBtn.addEventListener('click', async () => {
     if (transport) await transport.disconnect();
@@ -705,6 +757,10 @@ disconnectBtn.addEventListener('click', async () => {
     chip = null;
     
     log('Đã ngắt kết nối');
+    // Reset các trường liên quan đến MAC
+    deviceMacAddressInput.value = '';
+    macAddressDisplay.classList.add('d-none');
+    passwordHelp.textContent = 'Vui lòng kết nối thiết bị, nhấn nút [CPU] để lấy MAC, sau đó nhập mật khẩu tương ứng.';
     updateConnectionStatus(false);
     enableControls(false);
     setProgress(0);
@@ -968,7 +1024,7 @@ function checkBrowserCompatibility() {
     
     if (!isChrome && !isEdge) {
         // Show beautiful warning modal
-        showWarningModal();
+        showWarningModal();const firmwareList = document.getElementById('firmwareList')
         
         // Also disable connect button
         connectBtn.disabled = true;
