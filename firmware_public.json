@@ -16,7 +16,8 @@
         "Hạn chế hành động",
         "Phát nhạc server xiaozhi (đã sập)",
         "Tra giá vàng",
-        "Tin tức trên Express"
+        "Tin tức trên Express",
+        "Phù hợp để test"
       ],
       "hardware_info": {
         "chip": "ESP32-S3",
@@ -47,6 +48,7 @@
     "author": "HDN77"
   }
 }
+
 
 
 
