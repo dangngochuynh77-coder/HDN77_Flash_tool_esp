@@ -21,6 +21,16 @@
 
     <!-- Custom Styles -->
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .contact-link-hover {
+            transition: transform 0.2s ease-in-out, filter 0.2s ease-in-out;
+            display: inline-block; /* Cần thiết cho transform */
+        }
+        .contact-link-hover:hover {
+            transform: scale(1.05);
+            filter: brightness(1.15);
+        }
+    </style>
 </head>
 <body>
     <div class="container-fluid px-3 py-3 py-md-4" style="max-width: 1400px;">
@@ -92,6 +102,11 @@
                                  <button id="copyMacBtn" class="btn btn-sm btn-outline-secondary ms-2 d-none" title="Sao chép địa chỉ MAC">
                                      <i class="bi bi-clipboard me-1"></i>Sao chép
                                  </button>
+                                 <p class="small text-muted mt-2 mb-0">
+                                     <a href="https://www.facebook.com/DaNgocHuynh77/" target="_blank" class="text-decoration-underline contact-link-hover" style="color: #f093fb; font-weight: 700; font-size: 1.05rem;">
+                                        <i class="bi bi-exclamation-triangle-fill me-1"></i>Liên hệ HDN77 để lấy mật khẩu
+                                     </a>
+                                 </p>
                              </div>
                              <!-- Trường ẩn để lưu địa chỉ MAC -->
                              <input type="hidden" id="deviceMacAddress">
@@ -236,7 +251,7 @@
 
         <!-- Footer -->
         <div class="text-center mt-3">
-            <p class="small" style="color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">Mọi chi tiết liên hệ <a href="https://www.facebook.com/DaNgocHuynh77" target="_blank" rel="noopener noreferrer" style="color: #f093fb; font-weight: 600;">HDN77</a></p>
+            <p class="small" style="color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">Mọi chi tiết liên hệ <a href="https://www.facebook.com/DaNgocHuynh77" target="_blank" rel="noopener noreferrer" class="contact-link-hover" style="color: #f093fb; font-weight: 600;">HDN77</a></p>
         </div>
         <div class="text-center mt-4" style="color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.3); font-size: 0.95rem;">
             <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 12px; padding: 0.75rem 1.5rem; display: inline-block; border: 1px solid rgba(255,255,255,0.2);">
