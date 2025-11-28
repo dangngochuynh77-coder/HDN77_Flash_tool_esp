@@ -14,6 +14,7 @@ const verifyPasswordBtn = document.getElementById('verifyPasswordBtn');
 const passwordHelp = document.getElementById('passwordHelp');
 const getMacBtn = document.getElementById('getMacBtn');
 const macAddressDisplay = document.getElementById('macAddressDisplay');
+const copyMacBtn = document.getElementById('copyMacBtn');
 const firmwareList = document.getElementById('firmwareList');
 const deviceMacAddressInput = document.getElementById('deviceMacAddress');
 const progressBar = document.querySelector('#progress > i');
@@ -56,8 +57,10 @@ const espLoaderTerminal = {
             
             // Cập nhật giao diện người dùng với địa chỉ MAC vừa tìm thấy
             deviceMacAddressInput.value = macString;
-            macAddressDisplay.textContent = `Địa chỉ MAC của thiết bị: ${macString}`;
+            const macSpan = macAddressDisplay.querySelector('span');
+            macSpan.textContent = `Địa chỉ MAC của thiết bị: ${macString}`;
             macAddressDisplay.classList.remove('d-none');
+            copyMacBtn.classList.remove('d-none'); // Hiển thị nút sao chép
             
             passwordHelp.textContent = 'Đã có địa chỉ MAC. Bây giờ hãy nhập mật khẩu của bạn để mở khóa firmware full.';
             passwordHelp.classList.remove('text-danger');
@@ -110,6 +113,7 @@ function enableControls(connected) {
     getMacBtn.disabled = !connected; // Kích hoạt/Vô hiệu hóa nút lấy MAC
     if (!connected) {
         macAddressDisplay.classList.add('d-none');
+        copyMacBtn.classList.add('d-none');
     }
 }
 
@@ -922,6 +926,27 @@ firmwareList.addEventListener('change', async (e) => {
             e.target.value = '';
             showFirmwareInfo(null);
         }, 100);
+    }
+});
+
+// Sao chép địa chỉ MAC
+copyMacBtn.addEventListener('click', () => {
+    const macAddress = deviceMacAddressInput.value;
+    if (macAddress) {
+        navigator.clipboard.writeText(macAddress).then(() => {
+            log(`✅ Đã sao chép địa chỉ MAC: ${macAddress}`);
+            // Cung cấp phản hồi trực quan cho người dùng
+            const originalIcon = copyMacBtn.innerHTML;
+            copyMacBtn.innerHTML = '<i class="bi bi-clipboard-check-fill text-success me-1"></i>Đã sao chép';
+            copyMacBtn.title = 'Đã sao chép!';
+            setTimeout(() => {
+                copyMacBtn.innerHTML = originalIcon;
+                copyMacBtn.title = 'Sao chép địa chỉ MAC';
+            }, 2000); // Reset sau 2 giây
+        }).catch(err => {
+            log(`❌ Lỗi sao chép địa chỉ MAC: ${err}`);
+            alert('Không thể sao chép địa chỉ MAC. Vui lòng thử lại hoặc sao chép thủ công.');
+        });
     }
 });
 
