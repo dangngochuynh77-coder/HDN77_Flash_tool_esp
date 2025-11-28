@@ -43,7 +43,7 @@
     {
       "id": "Puppy_full",
       "name": "Puppy_full V2.0.4",
-      "filename": "merged-binary.bin",
+      "filename": "Puppy_fully V2.0.4.bin",
       "flashAddress": "0x00000",
       "path": "https://cdn.jsdelivr.net/gh/sumvipconbai/test@master/test/puppy_fw.bin",
       "description": "Firmware Puppy by HDN; wake word: Puppy",
