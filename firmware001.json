@@ -45,7 +45,7 @@
       "name": "Puppy_full V2.0.4",
       "filename": "merged-binary.bin",
       "flashAddress": "0x00000",
-      "path": "https://cdn.jsdelivr.net/gh/sumvipconbai/test@master/test/merged-binary.bin",
+      "path": "https://cdn.jsdelivr.net/gh/sumvipconbai/test@master/test/puppy_fw.bin",
       "description": "Firmware Puppy by HDN; wake word: Puppy",
       "size": "9748KB",
       "version": "2.0.4",
@@ -57,6 +57,7 @@
         "Nghe radio tất cả các kênh.",
         "Có thể hiển thị phổ nhạc khi nghe+radio ( mặc định hiển thị lyric ).",
         "Đặt báo thức, xem danh sách báo thức, xoá báo thức.( có thể thiết định số lần kêu báo thức trong cấu hình wifi) (âm báo thức giống của iphone).",
+        "Kiểm tra thời tiết chuẩn thành phố Việt Nam.",
         "Tra sổ xố.",
         "Tra giá vàng.",
         "Đọc tin tức vnexpress (có thể đọc chi tiết tin).",
@@ -64,6 +65,55 @@
         "Hiện thị danh sách wifi đã lưu trong cấu hình wifi, tối ưu hoá việc tự động kết nối đến wifi mạnh nhất.",
         "Thêm được server phát nhạc nếu thích (hoặc có) server khác.",
         "Hiệu chỉnh được góc độ server ở vị trí đứng puppy của từng servo.",
+        "Điều khiển hành động thông qua điện thoại/PC bằng trình duyệt.",
+        "Có thể update OTA trực tiếp khi có bản update."
+      ],
+      "hardware_info": {
+        "chip": "ESP32-S3",
+        "flash_size": "16MB",
+        "compatible_boards": [
+          "Otto-robot"
+        ],
+        "minimum_requirements": {
+          "flash": "8MB",
+          "ram": "512KB",
+          "psram": "2MB"
+        },
+        "gpio_requirements": [
+          "I2S for audio output",
+          "SPI for TFT display",
+          "GPIO for touch buttons",
+          "UART for debugging"
+        ],
+        "power_requirements": "5V via USB"
+      }
+    },
+    {
+      "id": "Otto_full",
+      "name": "Otto_full V2.0.4",
+      "filename": "otto_fw.bin",
+      "flashAddress": "0x00000",
+      "path": "https://cdn.jsdelivr.net/gh/sumvipconbai/test@master/test/otto_fw.bin",
+      "description": "Firmware Otto by HDN; wake word: Hi Lily, Hi Esp",
+      "size": "9748KB",
+      "version": "2.0.4",
+      "category": "AI Xiaozhi",
+      "note": "Chỉ dành cho ESP32-S3 module",
+      "hardware_version": "ESP32-S3",
+      "features": [
+        "Lệnh xoay màn hình khi bị ngược hoặc lệch. (0,90,180,270)",
+        "Nghe nhạc zing.",
+        "Nghe radio tất cả các kênh.",
+        "Có thể hiển thị phổ nhạc khi nghe+radio ( mặc định hiển thị phổ nhạc).",
+        "Đặt báo thức, xem danh sách báo thức, xoá báo thức.( có thể thiết định số lần kêu báo thức trong cấu hình wifi) (âm báo thức giống của iphone).",
+        "Kiểm tra thời tiết chuẩn thành phố Việt Nam.",
+        "Tra sổ xố.",
+        "Tra giá vàng.",
+        "Đọc tin tức vnexpress (có thể đọc chi tiết tin).",
+        "Hiện mã QR thanh toán (thiết định stk trong cấu hình wifi).",
+        "Hiện thị danh sách wifi đã lưu trong cấu hình wifi, tối ưu hoá việc tự động kết nối đến wifi mạnh nhất.",
+        "Thêm được server phát nhạc nếu thích (hoặc có) server khác.",
+        "Tối ưu hóa việc kết nối wifi mạnh nhất và hiển thị list wifi đã kết nối",
         "Có thể update OTA trực tiếp khi có bản update."
       ],
       "hardware_info": {
