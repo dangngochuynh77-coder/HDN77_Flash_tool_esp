@@ -87,7 +87,12 @@
                                 </button>
                             </div>
                              <div id="passwordHelp" class="form-text">Vui lòng kết nối thiết bị, để lấy địa chỉ MAC, sau đó nhập mật khẩu tương ứng.</div>
-                             <div id="macAddressDisplay" class="form-text text-info fw-bold d-none mt-1"></div>
+                             <div id="macAddressDisplay" class="form-text text-info fw-bold d-none mt-1">
+                                 <span></span>
+                                 <button id="copyMacBtn" class="btn btn-sm btn-outline-secondary ms-2 d-none" title="Sao chép địa chỉ MAC">
+                                     <i class="bi bi-clipboard me-1"></i>Sao chép
+                                 </button>
+                             </div>
                              <!-- Trường ẩn để lưu địa chỉ MAC -->
                              <input type="hidden" id="deviceMacAddress">
                         </div>
