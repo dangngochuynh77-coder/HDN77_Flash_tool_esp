@@ -94,7 +94,7 @@
       "filename": "otto_fw.bin",
       "flashAddress": "0x00000",
       "path": "https://cdn.jsdelivr.net/gh/sumvipconbai/fw_full@v2.0.4.1/otto_fw.bin",
-      "description": "Firmware Otto by HDN; wake word: Hi Lily, Hi Esp",
+      "description": "Firmware Otto by HDN; Sẽ tự động update OTA lên bản mới nhất; Wake word: Hi Lily, Hi Esp",
       "size": "10936.7KB",
       "version": "2.0.4",
       "category": "AI Xiaozhi",
