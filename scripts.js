@@ -268,7 +268,7 @@ verifyPasswordBtn.addEventListener('click', async () => {
 
     // Bước 2: So sánh mật khẩu người dùng nhập với mật khẩu đã tạo
     if (enteredPassword === correctPassword) {
-        passwordHelp.textContent = 'Mật khẩu chính xác! Đang tải danh sách firmware đầy đủ...';
+        passwordHelp.textContent = 'Mật khẩu chính xác! Hãy chọn đúng Firmware từ danh sách phía dưới...';
         passwordHelp.classList.remove('text-danger');
         passwordHelp.classList.add('text-success');
         firmwarePasswordInput.disabled = true;
