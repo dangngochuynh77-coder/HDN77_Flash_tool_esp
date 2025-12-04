@@ -62,7 +62,7 @@ const espLoaderTerminal = {
             macAddressDisplay.classList.remove('d-none');
             copyMacBtn.classList.remove('d-none'); // Hiển thị nút sao chép
             
-            passwordHelp.textContent = 'Đã có địa chỉ MAC. Bây giờ hãy nhập mật khẩu của bạn để mở khóa firmware full.';
+            passwordHelp.textContent = 'Đã có địa chỉ MAC. Bây giờ hãy sao chép MAC và gửi cho HDN77 để lấy mật khẩu.';
             passwordHelp.classList.remove('text-danger');
             passwordHelp.classList.add('text-success');
         }
