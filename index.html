@@ -30,6 +30,32 @@
             transform: scale(1.05);
             filter: brightness(1.15);
         }
+        /* Hiệu ứng modal QR zoom */
+        #qrZoomOverlay {
+          display: none;
+          position: fixed;
+          z-index: 2000;
+          left: 0; top: 0; right: 0; bottom: 0;
+          background: rgba(0,0,0,0.85);
+          justify-content: center;
+          align-items: center;
+          transition: opacity 0.2s;
+        }
+        #qrZoomOverlay.active {
+          display: flex;
+          opacity: 1;
+        }
+        #qrZoomOverlay img {
+          width: 95vw;
+          height: 95vh;
+          object-fit: contain;
+          border-radius: 28px;
+          border: 14px solid #28a745;
+          background: #fff;
+          box-shadow: 0 16px 64px rgba(0,0,0,0.7);
+          transition: transform 0.2s;
+          transform: scale(0.5);
+        }
     </style>
 </head>
 <body>
@@ -283,7 +309,7 @@
                             </div>
 
                             <!-- Ghi chú -->
-                             <div class="alert alert-danger" role="alert">
+                            <div class="alert alert-danger" role="alert">
                                 <h5 class="fw-bold mb-3"><i class="bi bi-exclamation-triangle-fill me-2"></i>Ghi chú:</h5>
                                 <p class="mb-2">
                                     <strong style="color: yellow;">(*) Xong hết tất cả nếu màn hình bị xoay ngược hướng thì cứ để lệnh nó là:
@@ -298,12 +324,11 @@
                                 </p>
                             </div>
 
-
                             <!-- Thắc mắc -->
                             <div class="alert alert-info" role="alert">
                                 <p class="mb-0">
                                     <i class="bi bi-question-circle-fill me-2"></i>
-                                    Thắc mắc hoặc chưa rõ chỗ nào hãy liên hệ HDN77 qua fb. Sẽ hỗ trợ AE cho tới khi AE up được FW.
+                                    Thắc mắc hoặc chưa rõ chỗ nào hãy liên hệ HDN77 qua FB. Sẽ hỗ trợ AE cho tới khi AE up được FW.
                                 </p>
                             </div>
                         </div>
@@ -342,7 +367,7 @@
                                         <h5 class="text-success fw-bold mb-3">
                                             <i class="bi bi-qr-code me-2"></i>Quét mã QR để thanh toán
                                         </h5>
-                                        <img src="qr_payment.png" alt="QR Code thanh toán" class="img-fluid rounded border border-success shadow" style="max-width: 300px; width: 100%;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                        <img src="qr_payment.png" alt="QR Code thanh toán" class="img-fluid rounded border border-success shadow qr-zoom-trigger" style="max-width: 300px; width: 100%; cursor: zoom-in;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                                         <div style="display: none; padding: 20px; border: 2px dashed #28a745; border-radius: 8px; background: #f8f9fa;">
                                             <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
                                             <p class="text-muted mt-2 mb-0">Chưa có ảnh QR<br><small>Vui lòng thêm file qr_payment.png</small></p>
@@ -351,6 +376,42 @@
                                             <i class="bi bi-heart-fill text-danger me-1"></i>
                                             Cảm ơn bạn đã ủng hộ HDN77!
                                         </p>
+                                        <!-- Overlay QR Zoom -->
+                                        <div id="qrZoomOverlay">
+                                          <img src="qr_payment.png" alt="QR Code thanh toán">
+                                        </div>
+                                        <script>
+                                        (function() {
+                                          var qrImg = document.querySelector('.qr-zoom-trigger');
+                                          var overlay = document.getElementById('qrZoomOverlay');
+                                          var overlayImg = overlay.querySelector('img');
+                                          if (qrImg && overlay) {
+                                            qrImg.addEventListener('mouseenter', function() {
+                                              overlayImg.src = qrImg.src;
+                                              overlay.classList.add('active');
+                                            });
+                                            qrImg.addEventListener('mouseleave', function(e) {
+                                              // Nếu chuột di chuyển sang overlay thì không tắt
+                                              var to = e.relatedTarget;
+                                              if (!overlay.contains(to)) overlay.classList.remove('active');
+                                            });
+                                            overlay.addEventListener('mouseenter', function() {
+                                              overlay.classList.add('active');
+                                            });
+                                            overlay.addEventListener('mouseleave', function() {
+                                              overlay.classList.remove('active');
+                                            });
+                                            // Tắt khi nhấn ESC
+                                            document.addEventListener('keydown', function(e) {
+                                              if (e.key === 'Escape') overlay.classList.remove('active');
+                                            });
+                                            // Tắt khi click ra ngoài ảnh
+                                            overlay.addEventListener('click', function(e) {
+                                              if (e.target === overlay) overlay.classList.remove('active');
+                                            });
+                                          }
+                                        })();
+                                        </script>
                                     </div>
                                 </div>
                             </div>
