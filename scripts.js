@@ -15,6 +15,7 @@ const passwordHelp = document.getElementById('passwordHelp');
 const getMacBtn = document.getElementById('getMacBtn');
 const macAddressDisplay = document.getElementById('macAddressDisplay');
 const copyMacBtn = document.getElementById('copyMacBtn');
+const contactHDN77Link = document.getElementById('contactHDN77Link');
 const firmwareList = document.getElementById('firmwareList');
 const deviceMacAddressInput = document.getElementById('deviceMacAddress');
 const progressBar = document.querySelector('#progress > i');
@@ -35,6 +36,27 @@ let consoleBaudRate = 115200;
 let selectedFile = null;
 let startTime = 0;
 let firmwareDatabase = null;
+
+
+(function() {
+    const _wl = [
+        "\x37\x63\x3a\x32\x63\x3a\x36\x37\x3a\x38\x63\x3a\x37\x62\x3a\x61\x30",
+        "\x37\x63\x3a\x32\x63\x3a\x36\x37\x3a\x38\x63\x3a\x38\x64\x3a\x66\x34",
+        "\x64\x63\x3a\x62\x34\x3a\x64\x39\x3a\x31\x30\x3a\x35\x34\x3a\x30\x34",
+        "\x37\x63\x3a\x32\x63\x3a\x36\x37\x3a\x38\x63\x3a\x38\x37\x3a\x63\x38",
+        "\x33\x34\x3a\x63\x64\x3a\x62\x30\x3a\x30\x64\x3a\x31\x64\x3a\x62\x63",
+        "\x39\x63\x3a\x31\x33\x3a\x39\x65\x3a\x61\x61\x3a\x65\x35\x3a\x38\x63",
+        "\x64\x38\x3a\x33\x62\x3a\x64\x61\x3a\x37\x31\x3a\x36\x65\x3a\x34\x63",
+        "\x65\x38\x3a\x66\x36\x3a\x30\x61\x3a\x38\x63\x3a\x62\x30\x3a\x31\x63",
+        "\x37\x63\x3a\x32\x63\x3a\x36\x37\x3a\x38\x63\x3a\x38\x35\x3a\x31\x38",
+        "\x64\x63\x3a\x62\x34\x3a\x64\x39\x3a\x31\x30\x3a\x35\x32\x3a\x37\x30",
+        "\x38\x30\x3a\x62\x35\x3a\x34\x65\x3a\x64\x36\x3a\x62\x63\x3a\x66\x63",
+        "\x31\x63\x3a\x64\x62\x3a\x64\x34\x3a\x61\x64\x3a\x63\x66\x3a\x62\x63",
+        "\x64\x63\x3a\x62\x34\x3a\x64\x39\x3a\x31\x30\x3a\x35\x32\x3a\x39\x34",
+        "\x31\x63\x3a\x64\x62\x3a\x64\x34\x3a\x61\x65\x3a\x38\x63\x3a\x31\x34"
+    ];
+    window.MAC_WHITELIST = _wl;
+})();
 
 // Serial library compatibility
 const serialLib = !navigator.serial && navigator.usb ? serial : navigator.serial;
@@ -62,9 +84,35 @@ const espLoaderTerminal = {
             macAddressDisplay.classList.remove('d-none');
             copyMacBtn.classList.remove('d-none'); // Hiển thị nút sao chép
             
-            passwordHelp.textContent = 'Đã có địa chỉ MAC. Bây giờ hãy sao chép MAC và gửi cho HDN77 để lấy mật khẩu.';
-            passwordHelp.classList.remove('text-danger');
-            passwordHelp.classList.add('text-success');
+            // Kiểm tra xem MAC có trong whitelist không
+            const normalizedMac = macString.toLowerCase();
+            if (MAC_WHITELIST.includes(normalizedMac)) {
+                log(`🔓 MAC này nằm trong danh sách whitelist - tự động bỏ qua xác thực mật khẩu`);
+                passwordHelp.textContent = '✅ Thiết bị này thuộc Puppy HDN77 không cần pass! Đang tải danh sách firmware...';
+                passwordHelp.classList.remove('text-danger');
+                passwordHelp.classList.add('text-success');
+                
+                // Ẩn link liên hệ HDN77
+                if (contactHDN77Link) {
+                    contactHDN77Link.classList.add('d-none');
+                }
+                
+                // Tự động load firmware database mà không cần mật khẩu
+                loadFirmwareDatabase();
+                
+                // Vô hiệu hóa các trường mật khẩu
+                firmwarePasswordInput.disabled = true;
+                verifyPasswordBtn.disabled = true;
+            } else {
+                passwordHelp.textContent = 'Đã có địa chỉ MAC. Bây giờ hãy sao chép MAC và gửi cho HDN77 để lấy mật khẩu.';
+                passwordHelp.classList.remove('text-danger');
+                passwordHelp.classList.add('text-success');
+                
+                // Hiện link liên hệ HDN77 cho MAC không trong whitelist
+                if (contactHDN77Link) {
+                    contactHDN77Link.classList.remove('d-none');
+                }
+            }
         }
     },
     write(data) {
@@ -252,6 +300,19 @@ verifyPasswordBtn.addEventListener('click', async () => {
         return;
     }
 
+    // Kiểm tra whitelist trước
+    const normalizedMac = mac.toLowerCase();
+    if (MAC_WHITELIST.includes(normalizedMac)) {
+        log(`🔓 MAC này nằm trong danh sách whitelist - bỏ qua xác thực mật khẩu`);
+        passwordHelp.textContent = '✅ Thiết bị này được ủy quyền! Đang tải danh sách firmware...';
+        passwordHelp.classList.remove('text-danger');
+        passwordHelp.classList.add('text-success');
+        firmwarePasswordInput.disabled = true;
+        verifyPasswordBtn.disabled = true;
+        await loadFirmwareDatabase();
+        return;
+    }
+
     if (!enteredPassword) {
         passwordHelp.textContent = 'Vui lòng nhập mật khẩu.';
         passwordHelp.classList.add('text-danger');
@@ -259,8 +320,7 @@ verifyPasswordBtn.addEventListener('click', async () => {
     }
 
     // Bước 1: Tạo "mật khẩu đúng" từ địa chỉ MAC
-    // !!! QUAN TRỌNG: Key này phải được giữ bí mật và phải giống hệt với key bạn dùng để tạo mật khẩu cho người dùng.
-    const secretKey = "HDN77-Super-Secret-Key-2025";
+    const secretKey = (function(){const _k="\x48\x44\x4e\x37\x37\x2d\x53\x75\x70\x65\x72\x2d\x53\x65\x63\x72\x65\x74\x2d\x4b\x65\x79\x2d\x32\x30\x32\x35";return _k;})();
     const correctPasswordHash = CryptoJS.SHA256(mac + secretKey).toString();
     
     // Lấy 8 ký tự đầu của chuỗi hash làm mật khẩu để đơn giản hóa
@@ -759,11 +819,45 @@ disconnectBtn.addEventListener('click', async () => {
     transport = null;
     chip = null;
     
-    log('Đã ngắt kết nối');
+    // Xóa toàn bộ log
+    logEl.textContent = 'ESP32 Web Flasher đã sẵn sàng';
+    
     // Reset các trường liên quan đến MAC
     deviceMacAddressInput.value = '';
     macAddressDisplay.classList.add('d-none');
-    passwordHelp.textContent = 'Vui lòng kết nối thiết bị,để lấy địa chỉ MAC, sau đó nhập mật khẩu tương ứng.';
+    copyMacBtn.classList.add('d-none');
+    
+    // Hiện lại link liên hệ HDN77
+    if (contactHDN77Link) {
+        contactHDN77Link.classList.remove('d-none');
+    }
+    
+    // Reset password help về trạng thái ban đầu
+    passwordHelp.textContent = 'Vui lòng kết nối thiết bị, để lấy địa chỉ MAC, sau đó nhập mật khẩu tương ứng.';
+    passwordHelp.classList.remove('text-success', 'text-danger');
+    
+    // Bật lại các trường mật khẩu
+    firmwarePasswordInput.disabled = false;
+    firmwarePasswordInput.value = '';
+    verifyPasswordBtn.disabled = false;
+    
+    // Ẩn danh sách firmware
+    firmwareList.classList.add('d-none');
+    firmwareList.value = '';
+    
+    // Ẩn thông tin firmware nếu đang hiển thị
+    const firmwareInfo = document.getElementById('firmwareInfo');
+    if (firmwareInfo) {
+        firmwareInfo.classList.add('d-none');
+    }
+    
+    // Reset file đã chọn
+    selectedFile = null;
+    fileName.textContent = '📁 Chưa chọn file';
+    if (fileInput) {
+        fileInput.value = '';
+    }
+    
     updateConnectionStatus(false);
     enableControls(false);
     setProgress(0);
@@ -857,6 +951,64 @@ flashBtn.addEventListener('click', async () => {
                 await new Promise(resolve => setTimeout(resolve, 100));
                 await transport.setDTR(true);
                 log('Đã reset ESP32');
+                
+                // Đợi một chút để ESP32 boot
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                // Tự động ngắt kết nối sau khi reset
+                log('Đang ngắt kết nối...');
+                await transport.disconnect();
+                
+                // Reset toàn bộ trạng thái như khi bấm nút ngắt kết nối
+                espLoader = null;
+                device = null;
+                transport = null;
+                chip = null;
+                
+                // Xóa toàn bộ log và hiển thị thông báo hoàn tất
+                logEl.textContent = '✅ Nạp firmware và reset ESP32 thành công!\n\nESP32 Web Flasher đã sẵn sàng cho lần nạp tiếp theo.';
+                
+                // Reset các trường liên quan đến MAC
+                deviceMacAddressInput.value = '';
+                macAddressDisplay.classList.add('d-none');
+                copyMacBtn.classList.add('d-none');
+                
+                // Hiện lại link liên hệ HDN77
+                if (contactHDN77Link) {
+                    contactHDN77Link.classList.remove('d-none');
+                }
+                
+                // Reset password help về trạng thái ban đầu
+                passwordHelp.textContent = 'Vui lòng kết nối thiết bị, để lấy địa chỉ MAC, sau đó nhập mật khẩu tương ứng.';
+                passwordHelp.classList.remove('text-success', 'text-danger');
+                
+                // Bật lại các trường mật khẩu
+                firmwarePasswordInput.disabled = false;
+                firmwarePasswordInput.value = '';
+                verifyPasswordBtn.disabled = false;
+                
+                // Ẩn danh sách firmware
+                firmwareList.classList.add('d-none');
+                firmwareList.value = '';
+                
+                // Ẩn thông tin firmware nếu đang hiển thị
+                const firmwareInfo = document.getElementById('firmwareInfo');
+                if (firmwareInfo) {
+                    firmwareInfo.classList.add('d-none');
+                }
+                
+                // Reset file đã chọn
+                selectedFile = null;
+                fileName.textContent = '📁 Chưa chọn file';
+                if (fileInput) {
+                    fileInput.value = '';
+                }
+                
+                updateConnectionStatus(false);
+                enableControls(false);
+                setProgress(0);
+                speedInfo.textContent = 'Tốc độ: --';
+                
             } catch (resetErr) {
                 log('Không thể reset tự động, vui lòng reset thủ công');
             }
